@@ -11,7 +11,7 @@ export const Navbar = () => {
         <div className="flex justify-between h-20">
           <div className="flex-shrink-0 flex items-center">
             <img
-              src="/lovable-uploads/fb3c80c7-008e-4d57-9bc4-3b98f0e8271e.png"
+              src="/lovable-uploads/14905b3c-b496-4a89-a553-9f9a13204bc6.png"
               alt="SHS Immobilier"
               className="h-12 w-auto"
             />

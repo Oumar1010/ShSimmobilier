@@ -7,7 +7,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <img
-              src="/lovable-uploads/fb3c80c7-008e-4d57-9bc4-3b98f0e8271e.png"
+              src="/lovable-uploads/14905b3c-b496-4a89-a553-9f9a13204bc6.png"
               alt="SHS Immobilier"
               className="h-12 w-auto mb-4 brightness-0 invert"
             />

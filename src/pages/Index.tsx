@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AppointmentForm } from "@/components/AppointmentForm";
+import { LandServices } from "@/components/services/LandServices";
+import { PropertyManagement } from "@/components/services/PropertyManagement";
+import { ConstructionSupport } from "@/components/services/ConstructionSupport";
 
 const services = [
   {
@@ -44,13 +47,13 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Services Section */}
+      {/* Services Overview Section */}
       <section id="services" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center mb-12">Nos Services</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {services.map((service) => (
-              <div key={service.title} className="bg-white p-6 rounded-lg shadow-lg">
+              <div key={service.title} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
                 <service.icon className="h-12 w-12 text-primary mb-4" />
                 <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
                 <p className="text-gray-600">{service.description}</p>
@@ -59,6 +62,11 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Detailed Services Sections */}
+      <LandServices />
+      <PropertyManagement />
+      <ConstructionSupport />
 
       {/* Appointment Section */}
       <section id="appointment" className="bg-gray-50 py-20">

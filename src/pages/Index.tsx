@@ -2,6 +2,7 @@ import { Building2, Key, Construction } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { AppointmentForm } from "@/components/AppointmentForm";
 
 const services = [
   {
@@ -59,8 +60,16 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Appointment Section */}
+      <section id="appointment" className="bg-gray-50 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center mb-12">Prendre Rendez-vous</h2>
+          <AppointmentForm />
+        </div>
+      </section>
+
       {/* Contact Section */}
-      <section id="contact" className="bg-gray-50 py-20">
+      <section id="contact" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold mb-8">Nous Contacter</h2>

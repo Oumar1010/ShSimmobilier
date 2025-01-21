@@ -1,4 +1,4 @@
-import { ClipboardCheck, UserCheck, Calculator, Tools, Scale } from "lucide-react";
+import { ClipboardCheck, UserCheck, Calculator, Scale, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const PropertyManagement = () => {
@@ -28,7 +28,7 @@ export const PropertyManagement = () => {
             <p className="text-gray-600">Encaissement des loyers, gestion des dépôts de garantie et envoi de rapports financiers réguliers.</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm">
-            <Tools className="h-12 w-12 text-secondary mb-4" />
+            <Settings className="h-12 w-12 text-secondary mb-4" />
             <h4 className="text-xl font-semibold mb-3">Entretien et maintenance</h4>
             <p className="text-gray-600">Coordination des réparations, suivi des travaux et gestion des prestataires.</p>
           </div>

@@ -5,13 +5,13 @@ export const Footer = () => {
     <footer className="bg-primary text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
+          <div className="flex flex-col items-center md:items-start">
             <img
               src="/lovable-uploads/14905b3c-b496-4a89-a553-9f9a13204bc6.png"
               alt="SHS Immobilier"
-              className="h-12 w-auto mb-4 brightness-0 invert"
+              className="h-16 w-auto mb-4 brightness-0 invert"
             />
-            <p className="text-sm">
+            <p className="text-sm text-center md:text-left">
               Votre partenaire immobilier de confiance au Sénégal
             </p>
           </div>
@@ -39,6 +39,9 @@ export const Footer = () => {
             <div className="space-y-2">
               <a href="#services" className="block hover:text-secondary transition-colors">
                 Nos Services
+              </a>
+              <a href="#appointment" className="block hover:text-secondary transition-colors">
+                Prendre Rendez-vous
               </a>
               <a href="#contact" className="block hover:text-secondary transition-colors">
                 Contact

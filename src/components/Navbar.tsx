@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, Home, Briefcase, Calendar, User, Mail, Phone, Search } from "lucide-react";
+import { Menu, X, Home, Briefcase, Calendar, User, Mail, Phone, Search, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -21,11 +21,6 @@ const menuItems = [
     isButton: true,
   },
   {
-    name: "Connexion",
-    href: "/auth",
-    icon: User,
-  },
-  {
     name: "Contact",
     href: "/#contact",
     icon: Mail,
@@ -39,21 +34,29 @@ export const Navbar = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Searching for:", searchQuery);
-    // Implement search functionality here
   };
 
   return (
     <nav className="bg-[#002E5D] sticky top-0 z-50 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20">
-          {/* Logo */}
-          <div className="flex-shrink-0 flex items-center">
-            <a href="/" className="block">
+          {/* Left section with logo and login */}
+          <div className="flex flex-col items-start">
+            {/* Logo */}
+            <a href="/" className="block pt-2">
               <img
                 src="/lovable-uploads/14905b3c-b496-4a89-a553-9f9a13204bc6.png"
                 alt="SHS Immobilier"
                 className="h-16 w-auto transform hover:scale-105 transition-transform duration-300"
               />
+            </a>
+            {/* Login Button */}
+            <a
+              href="/auth"
+              className="mt-2 flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-300 group"
+            >
+              <LogIn className="w-5 h-5 text-[#FFD700] group-hover:scale-110 transition-transform duration-300" />
+              <span className="font-medium">Connexion</span>
             </a>
           </div>
           
@@ -148,6 +151,16 @@ export const Navbar = () => {
           </form>
 
           <div className="flex-1 space-y-4">
+            {/* Login button for mobile */}
+            <a
+              href="/auth"
+              className="flex items-center space-x-3 text-white hover:text-[#FFD700] py-3 px-4 rounded-lg transition-colors duration-300 bg-white/10"
+              onClick={() => setIsOpen(false)}
+            >
+              <LogIn className="h-6 w-6 text-[#FFD700]" />
+              <span className="font-medium text-lg">Connexion</span>
+            </a>
+
             {menuItems.map((item) => (
               item.isButton ? (
                 <a

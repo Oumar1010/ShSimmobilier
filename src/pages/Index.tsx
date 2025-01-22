@@ -6,6 +6,7 @@ import { AppointmentForm } from "@/components/AppointmentForm";
 import { LandServices } from "@/components/services/LandServices";
 import { PropertyManagement } from "@/components/services/PropertyManagement";
 import { ConstructionSupport } from "@/components/services/ConstructionSupport";
+import { AboutSection } from "@/components/AboutSection";
 
 const services = [
   {
@@ -35,7 +36,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
-      {/* Hero Section with new banner */}
+      {/* Hero Section */}
       <section className="relative bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -77,6 +78,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* About Section */}
+      <AboutSection />
 
       {/* Services Overview Section */}
       <section id="services" className="py-20">

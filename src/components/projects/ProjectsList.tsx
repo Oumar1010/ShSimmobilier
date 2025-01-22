@@ -13,6 +13,31 @@ type Project = {
   created_at: string;
 };
 
+const isValidProjectType = (type: string): type is Project['project_type'] => {
+  return ['construction', 'purchase', 'rental'].includes(type);
+};
+
+const isValidStatus = (status: string): status is Project['status'] => {
+  return ['pending', 'in_progress', 'completed'].includes(status);
+};
+
+const validateProject = (project: any): Project => {
+  if (!isValidProjectType(project.project_type)) {
+    throw new Error(`Invalid project type: ${project.project_type}`);
+  }
+  if (!isValidStatus(project.status)) {
+    throw new Error(`Invalid status: ${project.status}`);
+  }
+  return {
+    id: project.id,
+    title: project.title,
+    description: project.description,
+    project_type: project.project_type,
+    status: project.status,
+    created_at: project.created_at,
+  };
+};
+
 const getStatusIcon = (status: Project['status']) => {
   switch (status) {
     case 'pending':
@@ -54,7 +79,9 @@ export const ProjectsList = () => {
 
         if (error) throw error;
 
-        setProjects(data || []);
+        // Validate and transform the data
+        const validatedProjects = (data || []).map(validateProject);
+        setProjects(validatedProjects);
       } catch (error) {
         console.error('Error fetching projects:', error);
         toast({

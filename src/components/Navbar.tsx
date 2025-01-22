@@ -20,11 +20,6 @@ const menuItems = [
     icon: Calendar,
     isButton: true,
   },
-  {
-    name: "Contact",
-    href: "/#contact",
-    icon: Mail,
-  },
 ];
 
 export const Navbar = () => {

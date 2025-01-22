@@ -35,35 +35,45 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="relative bg-primary text-white">
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1496307653780-42ee777d4833"
-            alt="SHS Immobilier Sénégal"
-            className="w-full h-full object-cover opacity-20"
-          />
-        </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="text-center">
-            <img
-              src="/lovable-uploads/14905b3c-b496-4a89-a553-9f9a13204bc6.png"
-              alt="SHS Immobilier"
-              className="h-24 w-auto mx-auto mb-8"
-            />
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Votre Partenaire de Confiance
-            </h1>
-            <p className="text-xl mb-8 max-w-2xl mx-auto">
-              Vous avez un projet immobilier en tête ? SHS Immobilier est à vos côtés pour vous accompagner à chaque étape.
-            </p>
-            <Button 
-              size="lg" 
-              className="bg-secondary text-primary hover:bg-secondary/90"
-              onClick={scrollToAppointment}
-            >
-              Prendre Rendez-vous
-            </Button>
+      {/* Hero Section with new banner */}
+      <section className="relative bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div className="text-left space-y-6">
+              <h2 className="text-blue-600 text-xl font-semibold">Votre partenaire de confiance !</h2>
+              <h1 className="text-4xl md:text-5xl font-bold text-primary">
+                SHS Immobilier
+              </h1>
+              <p className="text-xl text-gray-600 font-medium">
+                Experts, Visionnaires, Partenaires de Confiance
+              </p>
+              <div className="space-y-3">
+                <p className="text-lg">
+                  <a href="tel:+221772090577" className="text-primary hover:text-secondary transition-colors">
+                    +221 77 209 05 77
+                  </a>
+                </p>
+                <p className="text-lg">
+                  <a href="https://www.shsimmobilier.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-secondary transition-colors">
+                    www.shsimmobilier.com
+                  </a>
+                </p>
+              </div>
+              <Button 
+                size="lg" 
+                className="bg-secondary text-primary hover:bg-secondary/90 mt-4"
+                onClick={scrollToAppointment}
+              >
+                Prendre Rendez-vous
+              </Button>
+            </div>
+            <div className="relative">
+              <img
+                src="/lovable-uploads/166ef7af-36f9-4995-9b17-e85b15bcbfd2.png"
+                alt="SHS Immobilier Sénégal"
+                className="w-full h-auto object-contain"
+              />
+            </div>
           </div>
         </div>
       </section>

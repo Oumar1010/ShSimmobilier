@@ -8,6 +8,7 @@ import { PropertyManagement } from "@/components/services/PropertyManagement";
 import { ConstructionSupport } from "@/components/services/ConstructionSupport";
 import { AboutSection } from "@/components/AboutSection";
 import { ProjectsList } from "@/components/projects/ProjectsList";
+import { HomeSlider } from "@/components/HomeSlider";
 
 const services = [
   {
@@ -37,35 +38,8 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="relative bg-primary h-[80vh] flex items-center">
-        <div className="absolute inset-0">
-          <img
-            src="/lovable-uploads/fb3c80c7-008e-4d57-9bc4-3b98f0e8271e.png"
-            alt="Immobilier au Sénégal"
-            className="w-full h-full object-cover opacity-20"
-          />
-        </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fadeIn">
-            Votre Avenir Immobilier au Sénégal
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 animate-fadeIn" style={{ animationDelay: "0.2s" }}>
-            Expertise locale, vision internationale
-          </p>
-          <Button 
-            size="lg" 
-            className="bg-secondary text-primary hover:bg-secondary/90 animate-fadeIn"
-            style={{ animationDelay: "0.4s" }}
-            onClick={() => {
-              const servicesSection = document.getElementById('services');
-              servicesSection?.scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
-            Découvrez nos services
-          </Button>
-        </div>
-      </section>
+      {/* Hero Section with New Slider */}
+      <HomeSlider />
 
       {/* Services Overview Section */}
       <section id="services" className="py-20 bg-white">

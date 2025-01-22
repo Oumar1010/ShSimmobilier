@@ -1,0 +1,117 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
+
+export default function NewProject() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [projectType, setProjectType] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Utilisateur non connecté");
+
+      const { error } = await supabase
+        .from("real_estate_projects")
+        .insert([
+          {
+            title,
+            description,
+            project_type: projectType,
+            user_id: user.id,
+          },
+        ]);
+
+      if (error) throw error;
+
+      toast.success("Projet créé avec succès");
+      navigate("/dashboard");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-3xl font-bold text-gray-900 mb-8">Nouveau Projet</h1>
+
+          <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow">
+            <div>
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                Titre du projet
+              </label>
+              <Input
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                Description
+              </label>
+              <textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={4}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="projectType" className="block text-sm font-medium text-gray-700">
+                Type de projet
+              </label>
+              <Select onValueChange={setProjectType} required>
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionnez un type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="construction">Construction</SelectItem>
+                  <SelectItem value="purchase">Achat</SelectItem>
+                  <SelectItem value="rental">Location</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex justify-end space-x-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => navigate("/dashboard")}
+              >
+                Annuler
+              </Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? "Création..." : "Créer le projet"}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}

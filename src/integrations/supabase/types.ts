@@ -42,6 +42,54 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_history: {
+        Row: {
+          amount: number
+          id: string
+          payment_date: string | null
+          payment_method: string
+          payment_status: string | null
+          project_id: string | null
+          transaction_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          id?: string
+          payment_date?: string | null
+          payment_method: string
+          payment_status?: string | null
+          project_id?: string | null
+          transaction_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          id?: string
+          payment_date?: string | null
+          payment_method?: string
+          payment_status?: string | null
+          project_id?: string | null
+          transaction_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_history_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "real_estate_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_dashboard"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -71,6 +119,8 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          payment_status: string | null
+          price: number | null
           project_type: string
           status: string
           title: string
@@ -81,6 +131,8 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          payment_status?: string | null
+          price?: number | null
           project_type: string
           status?: string
           title: string
@@ -91,6 +143,8 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          payment_status?: string | null
+          price?: number | null
           project_type?: string
           status?: string
           title?: string

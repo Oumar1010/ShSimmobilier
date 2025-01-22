@@ -10,19 +10,24 @@ import { useEffect, useState } from "react";
 
 const slides = [
   {
-    image: "/lovable-uploads/fb3c80c7-008e-4d57-9bc4-3b98f0e8271e.png",
+    image: "https://images.unsplash.com/photo-1527576539890-dfa815648363?auto=format&fit=crop&w=1920&q=80",
     title: "Votre Partenaire Immobilier au Sénégal",
     subtitle: "Expertise et confiance depuis plus de 10 ans",
   },
   {
-    image: "/lovable-uploads/166ef7af-36f9-4995-9b17-e85b15bcbfd2.png",
+    image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1920&q=80",
     title: "Des Terrains d'Exception",
     subtitle: "Investissez dans les meilleures zones du Sénégal",
   },
   {
-    image: "https://images.unsplash.com/photo-1524230572899-a752b3835840?auto=format&fit=crop&w=1920&q=80",
+    image: "https://images.unsplash.com/photo-1496307653780-42ee777d4833?auto=format&fit=crop&w=1920&q=80",
     title: "Construction & Rénovation",
     subtitle: "Réalisez vos projets immobiliers avec excellence",
+  },
+  {
+    image: "https://images.unsplash.com/photo-1431576901776-e539bd916ba2?auto=format&fit=crop&w=1920&q=80",
+    title: "Architecture Moderne",
+    subtitle: "Des projets innovants adaptés à vos besoins",
   },
 ];
 

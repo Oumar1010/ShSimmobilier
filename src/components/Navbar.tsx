@@ -1,38 +1,40 @@
 import { useState } from "react";
-import { Menu, X, Phone, Building2, Key, Construction } from "lucide-react";
-import { Button } from "./ui/button";
+import { Menu, X, Phone, Home, Calendar, Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+const menuItems = [
+  {
+    name: "Accueil",
+    href: "/",
+    icon: Home,
+  },
+  {
+    name: "Services",
+    href: "/#services",
+    icon: Calendar,
+  },
+  {
+    name: "À propos",
+    href: "/#about",
+    icon: Info,
+  },
+];
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
-  const menuItems = [
-    {
-      name: "Achat et Vente de Terrains",
-      href: "#land-services",
-      icon: Building2,
-    },
-    {
-      name: "Gérance et Gestion Locative",
-      href: "#property-management",
-      icon: Key,
-    },
-    {
-      name: "Accompagnement Construction",
-      href: "#construction-support",
-      icon: Construction,
-    },
-  ];
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-24">
           <div className="flex-shrink-0 flex items-center">
-            <img
-              src="/lovable-uploads/14905b3c-b496-4a89-a553-9f9a13204bc6.png"
-              alt="SHS Immobilier"
-              className="h-20 w-auto transform hover:scale-105 transition-transform duration-300"
-            />
+            <a href="/">
+              <img
+                src="/lovable-uploads/14905b3c-b496-4a89-a553-9f9a13204bc6.png"
+                alt="SHS Immobilier"
+                className="h-20 w-auto transform hover:scale-105 transition-transform duration-300"
+              />
+            </a>
           </div>
           
           {/* Desktop menu */}
@@ -53,10 +55,12 @@ export const Navbar = () => {
                 <span className="font-medium">{item.name}</span>
               </a>
             ))}
-            <Button className="bg-primary text-white hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300">
-              <Phone className="mr-2 h-4 w-4" />
-              +33 7 69 31 65 58
-            </Button>
+            <a href="tel:+33769316558">
+              <Button className="bg-primary text-white hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300">
+                <Phone className="mr-2 h-4 w-4" />
+                +33 7 69 31 65 58
+              </Button>
+            </a>
           </div>
 
           {/* Mobile menu button */}
@@ -89,10 +93,12 @@ export const Navbar = () => {
                 <span>{item.name}</span>
               </a>
             ))}
-            <Button className="w-full mt-4 bg-primary text-white hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300">
-              <Phone className="mr-2 h-4 w-4" />
-              +33 7 69 31 65 58
-            </Button>
+            <a href="tel:+33769316558" className="block w-full">
+              <Button className="w-full mt-4 bg-primary text-white hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300">
+                <Phone className="mr-2 h-4 w-4" />
+                +33 7 69 31 65 58
+              </Button>
+            </a>
           </div>
         </div>
       )}

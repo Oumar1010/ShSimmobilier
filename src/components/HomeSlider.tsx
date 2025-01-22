@@ -20,7 +20,7 @@ const slides = [
     subtitle: "Investissez dans les meilleures zones du Sénégal",
   },
   {
-    image: "https://images.unsplash.com/photo-1524230572899-a752b3835840?auto=format&fit=crop&w=1920",
+    image: "https://images.unsplash.com/photo-1524230572899-a752b3835840?auto=format&fit=crop&w=1920&q=80",
     title: "Construction & Rénovation",
     subtitle: "Réalisez vos projets immobiliers avec excellence",
   },

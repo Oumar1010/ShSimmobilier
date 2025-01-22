@@ -25,16 +25,16 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#0A2647", // Navy blue from the logo
+          DEFAULT: "#002E5D", // Updated to new navy blue
           foreground: "#FFFFFF",
         },
         secondary: {
           DEFAULT: "#FFD700", // Yellow from the logo
-          foreground: "#0A2647",
+          foreground: "#002E5D",
         },
         accent: {
           DEFAULT: "#FFD700",
-          foreground: "#0A2647",
+          foreground: "#002E5D",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",

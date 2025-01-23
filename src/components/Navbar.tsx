@@ -39,7 +39,7 @@ export const Navbar = () => {
           <a href="/" className="flex items-center">
             <img
               src="/lovable-uploads/14905b3c-b496-4a89-a553-9f9a13204bc6.png"
-              alt="SHS Immobilier"
+              alt="shsimmobilier"
               className="h-16 w-auto transform hover:scale-105 transition-transform duration-300"
             />
           </a>

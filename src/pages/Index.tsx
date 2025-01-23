@@ -9,6 +9,7 @@ import { ConstructionSupport } from "@/components/services/ConstructionSupport";
 import { AboutSection } from "@/components/AboutSection";
 import { ProjectsList } from "@/components/projects/ProjectsList";
 import { HomeSlider } from "@/components/HomeSlider";
+import { ActionBlock } from "@/components/ActionBlock";
 
 const services = [
   {
@@ -40,6 +41,9 @@ const Index = () => {
       
       {/* Hero Section with New Slider */}
       <HomeSlider />
+
+      {/* New Action Block */}
+      <ActionBlock />
 
       {/* Services Overview Section */}
       <section id="services" className="py-20 bg-white">

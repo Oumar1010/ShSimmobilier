@@ -47,9 +47,9 @@ export const Footer = () => {
         
         <div className="mt-8 pt-8 border-t border-white/10 flex flex-col items-center space-y-4">
           <img
-            src="/lovable-uploads/14905b3c-b496-4a89-a553-9f9a13204bc6.png"
+            src="/lovable-uploads/fb3c80c7-008e-4d57-9bc4-3b98f0e8271e.png"
             alt="SHS Immobilier"
-            className="h-16 w-auto brightness-0 invert"
+            className="h-16 w-auto"
           />
           <p className="text-sm">&copy; {new Date().getFullYear()} SHS Immobilier. Tous droits réservés.</p>
         </div>

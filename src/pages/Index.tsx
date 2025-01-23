@@ -72,44 +72,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Company Presentation */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
-              <img
-                src="/lovable-uploads/166ef7af-36f9-4995-9b17-e85b15bcbfd2.png"
-                alt="SHS Immobilier Présentation"
-                className="w-full h-auto rounded-lg shadow-lg"
-              />
-            </div>
-            <div>
-              <h2 className="text-3xl font-bold text-primary mb-6">
-                SHS Immobilier
-              </h2>
-              <p className="text-xl text-gray-600 mb-8">
-                Experts, Visionnaires, Partenaires de Confiance
-              </p>
-              <div className="space-y-4">
-                <p className="text-gray-600">
-                  Contactez-nous au{" "}
-                  <a href="tel:+221772090577" className="text-primary hover:text-secondary transition-colors">
-                    +221 77 209 05 77
-                  </a>
-                </p>
-                <Button 
-                  size="lg" 
-                  className="bg-secondary text-primary hover:bg-secondary/90"
-                  onClick={scrollToAppointment}
-                >
-                  Prendre Rendez-vous
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Projects Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

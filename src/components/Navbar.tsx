@@ -35,25 +35,14 @@ export const Navbar = () => {
     <nav className="bg-[#002E5D] sticky top-0 z-50 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20">
-          {/* Left section with logo and login */}
-          <div className="flex flex-col items-start">
-            {/* Logo */}
-            <a href="/" className="block pt-2">
-              <img
-                src="/lovable-uploads/14905b3c-b496-4a89-a553-9f9a13204bc6.png"
-                alt="SHS Immobilier"
-                className="h-16 w-auto transform hover:scale-105 transition-transform duration-300"
-              />
-            </a>
-            {/* Login Button */}
-            <a
-              href="/auth"
-              className="mt-2 flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-300 group"
-            >
-              <LogIn className="w-5 h-5 text-[#FFD700] group-hover:scale-110 transition-transform duration-300" />
-              <span className="font-medium">Connexion</span>
-            </a>
-          </div>
+          {/* Logo */}
+          <a href="/" className="flex items-center">
+            <img
+              src="/lovable-uploads/14905b3c-b496-4a89-a553-9f9a13204bc6.png"
+              alt="SHS Immobilier"
+              className="h-16 w-auto transform hover:scale-105 transition-transform duration-300"
+            />
+          </a>
           
           {/* Desktop menu */}
           <div className="hidden md:flex items-center space-x-6">
@@ -146,16 +135,6 @@ export const Navbar = () => {
           </form>
 
           <div className="flex-1 space-y-4">
-            {/* Login button for mobile */}
-            <a
-              href="/auth"
-              className="flex items-center space-x-3 text-white hover:text-[#FFD700] py-3 px-4 rounded-lg transition-colors duration-300 bg-white/10"
-              onClick={() => setIsOpen(false)}
-            >
-              <LogIn className="h-6 w-6 text-[#FFD700]" />
-              <span className="font-medium text-lg">Connexion</span>
-            </a>
-
             {menuItems.map((item) => (
               item.isButton ? (
                 <a
@@ -186,7 +165,8 @@ export const Navbar = () => {
               )
             ))}
           </div>
-          <div className="pt-6 border-t border-white/10">
+
+          <div className="mt-auto space-y-4 border-t border-white/10 pt-4">
             <a href="tel:+221772090577" className="block">
               <Button 
                 variant="ghost"
@@ -195,6 +175,16 @@ export const Navbar = () => {
                 <Phone className="mr-2 h-4 w-4" />
                 +221 77 209 05 77
               </Button>
+            </a>
+
+            {/* Login button moved to bottom */}
+            <a
+              href="/auth"
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-300 group w-full"
+              onClick={() => setIsOpen(false)}
+            >
+              <LogIn className="w-5 h-5 text-[#FFD700] group-hover:scale-110 transition-transform duration-300" />
+              <span className="font-medium">Connexion</span>
             </a>
           </div>
         </div>

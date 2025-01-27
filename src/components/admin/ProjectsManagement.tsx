@@ -32,16 +32,23 @@ export const ProjectsManagement = () => {
 
   const fetchProjects = async () => {
     try {
+      console.log("Fetching projects...");
       const { data, error } = await supabase
         .from('real_estate_projects')
         .select(`
           *,
-          user:user_dashboard!real_estate_projects_user_id_fkey (
-            email:id
+          user:user_dashboard!inner (
+            id,
+            full_name
           )
         `);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching projects:", error);
+        throw error;
+      }
+      
+      console.log("Fetched projects:", data);
       
       // Transform the data to match the Project type
       const transformedData: Project[] = (data || []).map(project => ({
@@ -50,7 +57,7 @@ export const ProjectsManagement = () => {
         description: project.description,
         project_type: project.project_type,
         status_details: project.status_details,
-        user: project.user ? { email: project.user.email } : null,
+        user: project.user ? { email: project.user.full_name } : null,
         created_at: project.created_at,
         updated_at: project.updated_at,
         status: project.status,
@@ -62,8 +69,8 @@ export const ProjectsManagement = () => {
 
       setProjects(transformedData);
     } catch (error: any) {
+      console.error("Error in fetchProjects:", error);
       toast.error("Erreur lors du chargement des projets");
-      console.error("Error fetching projects:", error);
     } finally {
       setLoading(false);
     }
@@ -71,17 +78,22 @@ export const ProjectsManagement = () => {
 
   const updateProjectStatus = async (projectId: string, newStatus: string) => {
     try {
+      console.log("Updating project status:", { projectId, newStatus });
       const { error } = await supabase
         .from('real_estate_projects')
         .update({ status_details: newStatus })
         .eq('id', projectId);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error updating project status:", error);
+        throw error;
+      }
+      
       toast.success("Statut du projet mis à jour");
       fetchProjects();
     } catch (error: any) {
+      console.error("Error in updateProjectStatus:", error);
       toast.error("Erreur lors de la mise à jour du statut");
-      console.error("Error updating project status:", error);
     }
   };
 
@@ -89,17 +101,22 @@ export const ProjectsManagement = () => {
     if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) return;
 
     try {
+      console.log("Deleting project:", projectId);
       const { error } = await supabase
         .from('real_estate_projects')
         .delete()
         .eq('id', projectId);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error deleting project:", error);
+        throw error;
+      }
+      
       toast.success("Projet supprimé avec succès");
       fetchProjects();
     } catch (error: any) {
+      console.error("Error in deleteProject:", error);
       toast.error("Erreur lors de la suppression du projet");
-      console.error("Error deleting project:", error);
     }
   };
 

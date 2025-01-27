@@ -71,6 +71,13 @@ export const ProjectEditForm = ({ project, onClose, onUpdate }: ProjectEditFormP
     e.preventDefault();
     try {
       setSaving(true);
+      console.log("Updating project with data:", {
+        title,
+        description,
+        project_type: projectType,
+        status_details: status,
+      });
+      
       const { error } = await supabase
         .from('real_estate_projects')
         .update({
@@ -124,9 +131,9 @@ export const ProjectEditForm = ({ project, onClose, onUpdate }: ProjectEditFormP
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="residential">Résidentiel</SelectItem>
-            <SelectItem value="commercial">Commercial</SelectItem>
-            <SelectItem value="land">Terrain</SelectItem>
+            <SelectItem value="purchase">Achat</SelectItem>
+            <SelectItem value="rental">Location</SelectItem>
+            <SelectItem value="sale">Vente</SelectItem>
           </SelectContent>
         </Select>
       </div>

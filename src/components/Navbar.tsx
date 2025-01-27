@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Menu, X, Home, Briefcase, Calendar, User, Mail, Phone, Search, LogIn } from "lucide-react";
+import { Menu, X, Home, Briefcase, Calendar, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { AuthButtons } from "@/components/auth/AuthButtons";
 
 const menuItems = [
   {
@@ -38,7 +39,7 @@ export const Navbar = () => {
         behavior: 'smooth',
         block: 'start'
       });
-      setIsOpen(false); // Ferme le menu mobile si ouvert
+      setIsOpen(false);
     }
   };
 
@@ -91,15 +92,9 @@ export const Navbar = () => {
                 </a>
               )
             ))}
-            <a href="tel:+221772090577" className="hidden lg:flex">
-              <Button 
-                variant="ghost" 
-                className="text-white hover:bg-white/10 hover:text-[#FFD700] transition-all duration-300"
-              >
-                <Phone className="mr-2 h-4 w-4" />
-                +221 77 209 05 77
-              </Button>
-            </a>
+
+            {/* Auth Buttons */}
+            <AuthButtons />
           </div>
 
           {/* Mobile menu button */}
@@ -165,28 +160,11 @@ export const Navbar = () => {
                 </a>
               )
             ))}
-          </div>
 
-          <div className="mt-auto space-y-4 border-t border-white/10 pt-4">
-            <a href="tel:+221772090577" className="block">
-              <Button 
-                variant="ghost"
-                className="w-full text-white hover:bg-white/10 hover:text-[#FFD700] transition-all duration-300"
-              >
-                <Phone className="mr-2 h-4 w-4" />
-                +221 77 209 05 77
-              </Button>
-            </a>
-
-            {/* Login button moved to bottom */}
-            <a
-              href="/auth"
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-300 group w-full"
-              onClick={() => setIsOpen(false)}
-            >
-              <LogIn className="w-5 h-5 text-[#FFD700] group-hover:scale-110 transition-transform duration-300" />
-              <span className="font-medium">Connexion</span>
-            </a>
+            {/* Auth Buttons for mobile */}
+            <div className="mt-4">
+              <AuthButtons />
+            </div>
           </div>
         </div>
       </div>

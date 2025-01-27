@@ -2,7 +2,14 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Building2, Trash2, CheckCircle2, XCircle } from "lucide-react";
+import { Building2, Trash2, CheckCircle2, XCircle, Filter } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Project = {
   id: string;
@@ -25,15 +32,17 @@ type Project = {
 export const ProjectsManagement = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [projectTypeFilter, setProjectTypeFilter] = useState<string>("");
 
   useEffect(() => {
     fetchProjects();
-  }, []);
+  }, [statusFilter, projectTypeFilter]);
 
   const fetchProjects = async () => {
     try {
-      console.log("Fetching projects...");
-      const { data, error } = await supabase
+      console.log("Fetching projects with filters:", { statusFilter, projectTypeFilter });
+      let query = supabase
         .from('real_estate_projects')
         .select(`
           id,
@@ -54,6 +63,16 @@ export const ProjectsManagement = () => {
           )
         `);
 
+      if (statusFilter) {
+        query = query.eq('status_details', statusFilter);
+      }
+
+      if (projectTypeFilter) {
+        query = query.eq('project_type', projectTypeFilter);
+      }
+
+      const { data, error } = await query;
+
       if (error) {
         console.error("Error fetching projects:", error);
         throw error;
@@ -61,7 +80,6 @@ export const ProjectsManagement = () => {
       
       console.log("Fetched projects:", data);
       
-      // Transform the data to match the Project type
       const transformedData: Project[] = (data || []).map(project => ({
         id: project.id,
         title: project.title,
@@ -145,6 +163,42 @@ export const ProjectsManagement = () => {
         <Building2 className="h-6 w-6 text-primary" />
         Gestion des Projets
       </h2>
+
+      <div className="flex gap-4 mb-6">
+        <div className="w-1/2">
+          <Select
+            value={statusFilter}
+            onValueChange={setStatusFilter}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Filtrer par statut" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Tous les statuts</SelectItem>
+              <SelectItem value="en_cours">En cours</SelectItem>
+              <SelectItem value="termine">Terminé</SelectItem>
+              <SelectItem value="annule">Annulé</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="w-1/2">
+          <Select
+            value={projectTypeFilter}
+            onValueChange={setProjectTypeFilter}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Filtrer par type de projet" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Tous les types</SelectItem>
+              <SelectItem value="achat">Achat</SelectItem>
+              <SelectItem value="vente">Vente</SelectItem>
+              <SelectItem value="location">Location</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
       <div className="space-y-4">
         {projects.map((project) => (
           <div
@@ -156,6 +210,12 @@ export const ProjectsManagement = () => {
                 <h3 className="font-semibold">{project.title}</h3>
                 <p className="text-sm text-gray-500">
                   Propriétaire: {project.user?.email || "Non assigné"}
+                </p>
+                <p className="text-sm text-gray-500">
+                  Type: {project.project_type}
+                </p>
+                <p className="text-sm text-gray-500">
+                  Statut: {project.status_details || "Non défini"}
                 </p>
               </div>
               <Button

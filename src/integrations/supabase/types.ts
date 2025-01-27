@@ -303,7 +303,15 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      admin_statistics: {
+        Row: {
+          new_projects_last_week: number | null
+          total_appointments: number | null
+          total_projects: number | null
+          total_users: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       check_upcoming_appointments: {

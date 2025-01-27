@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ProjectsList } from "@/components/projects/ProjectsList";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { ProjectsManagement } from "@/components/admin/ProjectsManagement";
+import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { Building2, Shield, Home, Calendar } from "lucide-react";
 import { UserBlock } from "@/components/user/UserBlock";
 import {
@@ -136,6 +137,7 @@ export default function Dashboard() {
         <div className="px-4 py-6 sm:px-0">
           {isAdmin ? (
             <div className="space-y-8">
+              <AdminDashboard />
               <UserManagement />
               <ProjectsManagement />
             </div>

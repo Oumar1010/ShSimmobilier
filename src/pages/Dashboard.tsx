@@ -6,7 +6,7 @@ import { ProjectsList } from "@/components/projects/ProjectsList";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { ProjectsManagement } from "@/components/admin/ProjectsManagement";
 import { toast } from "sonner";
-import { Building2, Shield, Home, Calendar, User, LogOut } from "lucide-react";
+import { Building2, Shield, Home, Calendar, User, LogOut, Key } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -16,12 +16,21 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<any>(null);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -33,6 +42,15 @@ export default function Dashboard() {
         }
 
         setUser(user);
+
+        // Fetch user profile
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        
+        setUserProfile(profileData);
 
         // Check if user is admin
         const { data: roleData, error: roleError } = await supabase
@@ -68,9 +86,14 @@ export default function Dashboard() {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       navigate("/");
+      toast.success("Déconnexion réussie");
     } catch (error: any) {
       toast.error(error.message);
     }
+  };
+
+  const handlePasswordChange = () => {
+    navigate("/reset-password");
   };
 
   if (loading || !user) return null;
@@ -91,58 +114,79 @@ export default function Dashboard() {
               </h1>
             </div>
 
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuLink
-                    href="/"
-                    className={navigationMenuTriggerStyle()}
-                  >
-                    <Home className="mr-2 h-4 w-4" />
-                    Accueil
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
+            <div className="flex items-center gap-4">
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      href="/"
+                      className={navigationMenuTriggerStyle()}
+                    >
+                      <Home className="mr-2 h-4 w-4" />
+                      Accueil
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
 
-                <NavigationMenuItem>
-                  <NavigationMenuLink
-                    href="/dashboard"
-                    className={navigationMenuTriggerStyle()}
-                  >
-                    <Building2 className="mr-2 h-4 w-4" />
-                    Mes Projets
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      href="/dashboard"
+                      className={navigationMenuTriggerStyle()}
+                    >
+                      <Building2 className="mr-2 h-4 w-4" />
+                      Mes Projets
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
 
-                <NavigationMenuItem>
-                  <NavigationMenuLink
-                    href="/#appointment"
-                    className={navigationMenuTriggerStyle()}
-                  >
-                    <Calendar className="mr-2 h-4 w-4" />
-                    Rendez-vous
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      href="/#appointment"
+                      className={navigationMenuTriggerStyle()}
+                    >
+                      <Calendar className="mr-2 h-4 w-4" />
+                      Rendez-vous
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
 
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger>
-                    <User className="mr-2 h-4 w-4" />
-                    Profil
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="w-[200px] p-2">
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
-                        onClick={handleLogout}
-                      >
-                        <LogOut className="mr-2 h-4 w-4" />
-                        Se déconnecter
-                      </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10 transition-transform hover:scale-105">
+                      <AvatarImage src={userProfile?.avatar_url} alt={userProfile?.full_name || user.email} />
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {(userProfile?.full_name || user.email)?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 animate-fade-in" align="end">
+                  <div className="flex items-center justify-start gap-2 p-2">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{userProfile?.full_name || user.email}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
                     </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={handlePasswordChange}
+                    className="cursor-pointer flex items-center"
+                  >
+                    <Key className="mr-2 h-4 w-4" />
+                    <span>Changer le mot de passe</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={handleLogout}
+                    className="cursor-pointer flex items-center text-red-600 focus:text-red-600"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Se déconnecter</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
       </header>

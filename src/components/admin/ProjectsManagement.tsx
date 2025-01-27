@@ -36,8 +36,8 @@ export const ProjectsManagement = () => {
         .from('real_estate_projects')
         .select(`
           *,
-          user:user_id (
-            email
+          user:user_dashboard!real_estate_projects_user_id_fkey (
+            email:id
           )
         `);
 
@@ -50,7 +50,7 @@ export const ProjectsManagement = () => {
         description: project.description,
         project_type: project.project_type,
         status_details: project.status_details,
-        user: project.user,
+        user: project.user ? { email: project.user.email } : null,
         created_at: project.created_at,
         updated_at: project.updated_at,
         status: project.status,
@@ -127,7 +127,7 @@ export const ProjectsManagement = () => {
               <div>
                 <h3 className="font-semibold">{project.title}</h3>
                 <p className="text-sm text-gray-500">
-                  Propriétaire: {project.user?.email}
+                  Propriétaire: {project.user?.email || "Non assigné"}
                 </p>
               </div>
               <Button

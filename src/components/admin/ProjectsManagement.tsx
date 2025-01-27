@@ -47,8 +47,8 @@ export const ProjectsManagement = () => {
           payment_status,
           price,
           is_admin,
-          real_estate_projects.user_id,
-          user:user_dashboard!inner (
+          user_id,
+          user:user_dashboard (
             id,
             full_name
           )

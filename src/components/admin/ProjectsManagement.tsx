@@ -36,7 +36,18 @@ export const ProjectsManagement = () => {
       const { data, error } = await supabase
         .from('real_estate_projects')
         .select(`
-          *,
+          id,
+          title,
+          description,
+          project_type,
+          status_details,
+          created_at,
+          updated_at,
+          status,
+          payment_status,
+          price,
+          is_admin,
+          real_estate_projects.user_id,
           user:user_dashboard!inner (
             id,
             full_name

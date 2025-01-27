@@ -117,13 +117,33 @@ export const ProjectsList = () => {
 
   const fetchProjects = async () => {
     try {
+      console.log("Fetching projects...");
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        console.log("No user found");
+        return;
+      }
+
+      console.log("User ID:", user.id);
       const { data, error } = await supabase
         .from('real_estate_projects')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select(`
+          id,
+          title,
+          description,
+          project_type,
+          status_details,
+          created_at
+        `)
+        .eq('real_estate_projects.user_id', user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching projects:', error);
+        throw error;
+      }
 
+      console.log("Fetched projects:", data);
       // Validate and transform the project type
       const validatedProjects = (data || []).map(project => {
         // Ensure project_type is one of the allowed values

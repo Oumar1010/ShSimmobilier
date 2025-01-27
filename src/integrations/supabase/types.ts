@@ -119,6 +119,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_admin: boolean | null
           payment_status: string | null
           price: number | null
           project_type: string
@@ -132,6 +133,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_admin?: boolean | null
           payment_status?: string | null
           price?: number | null
           project_type: string
@@ -145,6 +147,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_admin?: boolean | null
           payment_status?: string | null
           price?: number | null
           project_type?: string
@@ -248,6 +251,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -256,6 +280,12 @@ export type Database = {
       check_upcoming_appointments: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      is_admin: {
+        Args: {
+          user_id: string
+        }
+        Returns: boolean
       }
     }
     Enums: {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -21,13 +21,41 @@ export default function NewProject() {
   const [projectType, setProjectType] = useState("");
   const [status, setStatus] = useState("en_cours");
 
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate("/auth");
+      }
+    };
+
+    checkUser();
+  }, [navigate]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Utilisateur non connecté");
+      if (!user) {
+        toast.error("Vous devez être connecté pour créer un projet");
+        navigate("/auth");
+        return;
+      }
+
+      // Vérifier si l'utilisateur a un profil dans user_dashboard
+      const { data: userDashboard, error: userDashboardError } = await supabase
+        .from("user_dashboard")
+        .select("id")
+        .eq("id", user.id)
+        .single();
+
+      if (userDashboardError || !userDashboard) {
+        console.error("Erreur lors de la vérification du profil:", userDashboardError);
+        toast.error("Erreur lors de la création du projet. Profil utilisateur non trouvé.");
+        return;
+      }
 
       const { error } = await supabase
         .from("real_estate_projects")
@@ -41,11 +69,15 @@ export default function NewProject() {
           },
         ]);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erreur lors de la création du projet:", error);
+        throw error;
+      }
 
       toast.success("Projet créé avec succès");
       navigate("/dashboard");
     } catch (error: any) {
+      console.error("Erreur:", error);
       toast.error(error.message);
     } finally {
       setLoading(false);

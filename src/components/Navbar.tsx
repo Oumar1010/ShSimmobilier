@@ -31,6 +31,17 @@ export const Navbar = () => {
     console.log("Searching for:", searchQuery);
   };
 
+  const scrollToAppointment = () => {
+    const element = document.getElementById('appointment');
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+      setIsOpen(false); // Ferme le menu mobile si ouvert
+    }
+  };
+
   return (
     <nav className="bg-[#002E5D] sticky top-0 z-50 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,19 +71,15 @@ export const Navbar = () => {
 
             {menuItems.map((item) => (
               item.isButton ? (
-                <a
+                <Button 
                   key={item.name}
-                  href="https://wa.me/+221772090577"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  onClick={scrollToAppointment}
+                  className="bg-[#FFD700] text-[#002E5D] hover:bg-[#FFD700]/90 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95 font-semibold"
+                  aria-label="Aller au formulaire de prise de rendez-vous"
                 >
-                  <Button 
-                    className="bg-[#FFD700] text-[#002E5D] hover:bg-[#FFD700]/90 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
-                  >
-                    <item.icon className="mr-2 h-4 w-4" />
-                    {item.name}
-                  </Button>
-                </a>
+                  <item.icon className="mr-2 h-4 w-4" />
+                  {item.name}
+                </Button>
               ) : (
                 <a
                   key={item.name}
@@ -137,21 +144,15 @@ export const Navbar = () => {
           <div className="flex-1 space-y-4">
             {menuItems.map((item) => (
               item.isButton ? (
-                <a
+                <Button 
                   key={item.name}
-                  href="https://wa.me/+221772090577"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block"
-                  onClick={() => setIsOpen(false)}
+                  onClick={scrollToAppointment}
+                  className="w-full bg-[#FFD700] text-[#002E5D] hover:bg-[#FFD700]/90 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95 font-semibold"
+                  aria-label="Aller au formulaire de prise de rendez-vous"
                 >
-                  <Button 
-                    className="w-full bg-[#FFD700] text-[#002E5D] hover:bg-[#FFD700]/90 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
-                  >
-                    <item.icon className="mr-2 h-4 w-4" />
-                    {item.name}
-                  </Button>
-                </a>
+                  <item.icon className="mr-2 h-4 w-4" />
+                  {item.name}
+                </Button>
               ) : (
                 <a
                   key={item.name}

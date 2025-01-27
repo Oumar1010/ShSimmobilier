@@ -19,7 +19,6 @@ export const FloatingAuthButton = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -28,7 +27,6 @@ export const FloatingAuthButton = () => {
       setLoading(false);
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -79,38 +77,39 @@ export const FloatingAuthButton = () => {
             <Button
               variant="secondary"
               size="lg"
-              className="rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-primary hover:bg-primary/90"
+              className="rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-primary hover:bg-primary/90 p-0 w-12 h-12"
               aria-label="Menu utilisateur"
             >
-              <Avatar className="h-8 w-8">
+              <Avatar className="h-full w-full border-2 border-white">
                 <AvatarImage 
                   src={userProfile?.avatar_url} 
-                  alt={userProfile?.full_name || user.email} 
+                  alt={userProfile?.full_name || user.email}
+                  className="object-cover"
                 />
-                <AvatarFallback className="bg-secondary text-primary">
+                <AvatarFallback className="bg-secondary text-primary text-lg">
                   {(userProfile?.full_name || user.email)?.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuContent align="end" className="w-56 mt-2">
             <DropdownMenuItem 
               onClick={() => navigate("/dashboard")}
-              className="cursor-pointer"
+              className="cursor-pointer hover:bg-primary/10"
             >
               <User className="mr-2 h-4 w-4" />
               Tableau de bord
             </DropdownMenuItem>
             <DropdownMenuItem 
               onClick={() => navigate("/change-password")}
-              className="cursor-pointer"
+              className="cursor-pointer hover:bg-primary/10"
             >
               <Settings className="mr-2 h-4 w-4" />
               Changer le mot de passe
             </DropdownMenuItem>
             <DropdownMenuItem 
               onClick={handleLogout}
-              className="cursor-pointer text-red-600 focus:text-red-600"
+              className="cursor-pointer text-red-600 hover:bg-red-50 hover:text-red-700"
             >
               <LogOut className="mr-2 h-4 w-4" />
               Déconnexion

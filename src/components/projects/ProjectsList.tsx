@@ -13,11 +13,11 @@ type Project = {
   created_at: string;
 };
 
-const isValidProjectType = (type: string): type is Project['project_type'] => {
-  return ['construction', 'purchase', 'rental'].includes(type);
+const isValidProjectType = (projectType: string): projectType is Project['project_type'] => {
+  return ['construction', 'purchase', 'rental'].includes(projectType);
 };
 
-const isValidStatus = (status: string): type is Project['status_details'] => {
+const isValidStatus = (status: string): status is Project['status_details'] => {
   return ['en_cours', 'termine', 'annule'].includes(status);
 };
 

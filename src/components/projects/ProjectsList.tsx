@@ -136,7 +136,7 @@ export const ProjectsList = () => {
           status_details,
           created_at
         `)
-        .eq('real_estate_projects.user_id', user.id);
+        .eq('user_id', user.id);
 
       if (error) {
         console.error('Error fetching projects:', error);

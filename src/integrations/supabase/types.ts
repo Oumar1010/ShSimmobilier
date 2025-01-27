@@ -114,6 +114,35 @@ export type Database = {
         }
         Relationships: []
       }
+      project_images: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          project_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          project_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          project_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_images_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "real_estate_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       real_estate_projects: {
         Row: {
           created_at: string

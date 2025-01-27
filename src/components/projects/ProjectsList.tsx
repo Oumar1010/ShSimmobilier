@@ -19,6 +19,8 @@ import {
   PlusCircle,
   Store,
   Trash2,
+  Edit,
+  Image,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -31,10 +33,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ProjectEditForm } from "./ProjectEditForm";
 
 export const ProjectsList = () => {
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingProject, setEditingProject] = useState<any>(null);
   const navigate = useNavigate();
 
   const getProjectTypeIcon = (type: string) => {
@@ -83,7 +93,12 @@ export const ProjectsList = () => {
           description,
           project_type,
           status_details,
-          created_at
+          created_at,
+          user_id,
+          project_images (
+            id,
+            image_url
+          )
         `)
         .eq('user_id', user.id);
 
@@ -144,7 +159,7 @@ export const ProjectsList = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project) => (
-          <Card key={project.id} className="flex flex-col">
+          <Card key={project.id} className="flex flex-col transition-all duration-300 hover:shadow-lg animate-fadeIn">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
@@ -169,8 +184,27 @@ export const ProjectsList = () => {
               <p className="text-sm text-gray-600 line-clamp-3">
                 {project.description}
               </p>
+              {project.project_images && project.project_images.length > 0 && (
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  {project.project_images.map((image: any) => (
+                    <img
+                      key={image.id}
+                      src={image.image_url}
+                      alt="Project"
+                      className="w-full h-24 object-cover rounded-md"
+                    />
+                  ))}
+                </div>
+              )}
             </CardContent>
             <CardFooter className="flex justify-end space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setEditingProject(project)}
+              >
+                <Edit className="h-4 w-4" />
+              </Button>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="destructive" size="sm">
@@ -214,6 +248,21 @@ export const ProjectsList = () => {
           </div>
         )}
       </div>
+
+      <Dialog open={!!editingProject} onOpenChange={() => setEditingProject(null)}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Modifier le projet</DialogTitle>
+          </DialogHeader>
+          {editingProject && (
+            <ProjectEditForm
+              project={editingProject}
+              onClose={() => setEditingProject(null)}
+              onUpdate={fetchProjects}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

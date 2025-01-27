@@ -124,14 +124,29 @@ export const ProjectsList = () => {
 
       if (error) throw error;
 
-      const validatedProjects = (data || []).map(project => ({
-        id: project.id,
-        title: project.title,
-        description: project.description,
-        project_type: project.project_type,
-        status_details: project.status_details,
-        created_at: project.created_at,
-      }));
+      // Validate and transform the project type
+      const validatedProjects = (data || []).map(project => {
+        // Ensure project_type is one of the allowed values
+        let validatedType: Project['project_type'] = 'purchase'; // Default value
+        if (['construction', 'purchase', 'rental'].includes(project.project_type)) {
+          validatedType = project.project_type as Project['project_type'];
+        }
+
+        // Ensure status_details is one of the allowed values
+        let validatedStatus: Project['status_details'] = 'en_cours'; // Default value
+        if (['en_cours', 'termine', 'annule'].includes(project.status_details)) {
+          validatedStatus = project.status_details as Project['status_details'];
+        }
+
+        return {
+          id: project.id,
+          title: project.title,
+          description: project.description,
+          project_type: validatedType,
+          status_details: validatedStatus,
+          created_at: project.created_at,
+        };
+      });
 
       setProjects(validatedProjects);
     } catch (error) {

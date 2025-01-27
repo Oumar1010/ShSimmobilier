@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Menu, X, Home, Briefcase, Calendar, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { AuthButtons } from "@/components/auth/AuthButtons";
 
 const menuItems = [
   {
@@ -92,9 +91,6 @@ export const Navbar = () => {
                 </a>
               )
             ))}
-
-            {/* Auth Buttons */}
-            <AuthButtons />
           </div>
 
           {/* Mobile menu button */}
@@ -160,11 +156,6 @@ export const Navbar = () => {
                 </a>
               )
             ))}
-
-            {/* Auth Buttons for mobile */}
-            <div className="mt-4">
-              <AuthButtons />
-            </div>
           </div>
         </div>
       </div>

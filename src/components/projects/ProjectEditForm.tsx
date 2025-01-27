@@ -58,6 +58,7 @@ export const ProjectEditForm = ({ project, onClose, onUpdate }: ProjectEditFormP
       });
 
       toast.success("Image ajoutée avec succès");
+      onUpdate();
     } catch (error) {
       console.error('Error uploading image:', error);
       toast.error("Erreur lors de l'upload de l'image");

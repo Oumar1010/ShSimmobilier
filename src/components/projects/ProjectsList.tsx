@@ -20,7 +20,6 @@ import {
   Store,
   Trash2,
   Edit,
-  Image,
 } from "lucide-react";
 import {
   AlertDialog,

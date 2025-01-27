@@ -7,12 +7,19 @@ import { Building2, Trash2, CheckCircle2, XCircle } from "lucide-react";
 type Project = {
   id: string;
   title: string;
-  description: string;
+  description: string | null;
   project_type: string;
-  status_details: string;
-  user: {
+  status_details: string | null;
+  user?: {
     email: string;
-  };
+  } | null;
+  created_at?: string;
+  updated_at?: string;
+  status?: string;
+  payment_status?: string | null;
+  price?: number | null;
+  is_admin?: boolean | null;
+  user_id?: string | null;
 };
 
 export const ProjectsManagement = () => {
@@ -35,7 +42,25 @@ export const ProjectsManagement = () => {
         `);
 
       if (error) throw error;
-      setProjects(data);
+      
+      // Transform the data to match the Project type
+      const transformedData: Project[] = (data || []).map(project => ({
+        id: project.id,
+        title: project.title,
+        description: project.description,
+        project_type: project.project_type,
+        status_details: project.status_details,
+        user: project.user,
+        created_at: project.created_at,
+        updated_at: project.updated_at,
+        status: project.status,
+        payment_status: project.payment_status,
+        price: project.price,
+        is_admin: project.is_admin,
+        user_id: project.user_id
+      }));
+
+      setProjects(transformedData);
     } catch (error: any) {
       toast.error("Erreur lors du chargement des projets");
       console.error("Error fetching projects:", error);

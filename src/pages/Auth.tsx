@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { ResetPasswordRequest } from "@/components/auth/ResetPasswordRequest";
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +41,33 @@ export default function Auth() {
     }
   };
 
+  if (showResetPassword) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+          <img
+            src="/lovable-uploads/14905b3c-b496-4a89-a553-9f9a13204bc6.png"
+            alt="shsimmobilier"
+            className="mx-auto h-24 w-auto"
+          />
+        </div>
+
+        <div className="mt-8">
+          <ResetPasswordRequest />
+          <div className="mt-4 text-center">
+            <Button
+              variant="ghost"
+              onClick={() => setShowResetPassword(false)}
+              className="text-primary hover:text-primary/80"
+            >
+              Retour à la connexion
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -56,7 +85,10 @@ export default function Auth() {
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleAuth}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email
               </label>
               <Input
@@ -69,7 +101,10 @@ export default function Auth() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Mot de passe
               </label>
               <Input
@@ -86,7 +121,7 @@ export default function Auth() {
             </Button>
           </form>
 
-          <div className="mt-6">
+          <div className="mt-6 space-y-4">
             <Button
               variant="ghost"
               className="w-full"
@@ -96,6 +131,16 @@ export default function Auth() {
                 ? "Déjà un compte ? Se connecter"
                 : "Pas de compte ? S'inscrire"}
             </Button>
+
+            {!isSignUp && (
+              <Button
+                variant="ghost"
+                className="w-full text-primary hover:text-primary/80"
+                onClick={() => setShowResetPassword(true)}
+              >
+                Mot de passe oublié ?
+              </Button>
+            )}
           </div>
         </div>
       </div>

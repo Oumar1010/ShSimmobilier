@@ -2,6 +2,11 @@ import { Building2, MapPin, Shield, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const LandServices = () => {
+  const scrollToContact = () => {
+    const element = document.getElementById('contact');
+    element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="py-16 bg-white" id="land-services">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -45,7 +50,10 @@ export const LandServices = () => {
               <span>Conseils pour optimiser votre investissement immobilier.</span>
             </li>
           </ul>
-          <Button className="bg-secondary text-primary hover:bg-secondary/90">
+          <Button 
+            onClick={scrollToContact}
+            className="bg-secondary text-primary hover:bg-secondary/90 transform transition-all duration-300 hover:scale-105 active:scale-95"
+          >
             Contactez-nous
           </Button>
         </div>

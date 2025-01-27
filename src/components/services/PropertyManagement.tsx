@@ -2,6 +2,11 @@ import { ClipboardCheck, UserCheck, Calculator, Scale, Settings } from "lucide-r
 import { Button } from "@/components/ui/button";
 
 export const PropertyManagement = () => {
+  const scrollToContact = () => {
+    const element = document.getElementById('contact');
+    element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="py-16 bg-gray-50" id="property-management">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,7 +48,10 @@ export const PropertyManagement = () => {
           <p className="text-lg mb-6">
             Faire appel à notre service de gérance locative, c'est bénéficier d'un accompagnement sur mesure, d'une tranquillité d'esprit et d'un rendement optimisé pour vos investissements immobiliers.
           </p>
-          <Button className="bg-secondary text-primary hover:bg-secondary/90">
+          <Button 
+            onClick={scrollToContact}
+            className="bg-secondary text-primary hover:bg-secondary/90 transform transition-all duration-300 hover:scale-105 active:scale-95"
+          >
             Contactez-nous
           </Button>
         </div>

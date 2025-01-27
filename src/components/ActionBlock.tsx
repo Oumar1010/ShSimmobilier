@@ -6,7 +6,7 @@ export const ActionBlock = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="w-full py-16 bg-gradient-to-b from-primary/5 to-white">
+    <section className="w-full py-16 bg-gradient-to-b from-primary/5 to-white animate-fadeIn">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold text-primary mb-4">
@@ -21,15 +21,15 @@ export const ActionBlock = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           <div className="group">
             <Button
-              onClick={() => navigate("/projects/new")}
+              onClick={() => navigate("/auth")}
               className="w-full h-auto py-8 px-6 bg-white hover:bg-primary/5 text-primary border border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-4 rounded-xl group-hover:scale-105"
               variant="ghost"
             >
               <Building2 className="w-12 h-12" />
               <div className="space-y-2">
-                <h3 className="text-xl font-semibold">Créer un Nouveau Projet</h3>
+                <h3 className="text-xl font-semibold">Se connecter pour gérer vos projets</h3>
                 <p className="text-sm text-gray-600">
-                  Lancez votre projet immobilier dès maintenant
+                  Accédez à votre espace personnel
                 </p>
               </div>
             </Button>

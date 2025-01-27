@@ -10,6 +10,9 @@ import { AboutSection } from "@/components/AboutSection";
 import { ProjectsList } from "@/components/projects/ProjectsList";
 import { HomeSlider } from "@/components/HomeSlider";
 import { ActionBlock } from "@/components/ActionBlock";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 const services = [
   {
@@ -30,6 +33,24 @@ const services = [
 ];
 
 const Index = () => {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const scrollToAppointment = () => {
     const element = document.getElementById('appointment');
     element?.scrollIntoView({ behavior: 'smooth' });
@@ -41,9 +62,6 @@ const Index = () => {
       
       {/* Hero Section with New Slider */}
       <HomeSlider />
-
-      {/* New Action Block */}
-      <ActionBlock />
 
       {/* Services Overview Section */}
       <section id="services" className="py-20 bg-white">
@@ -119,6 +137,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Action Block - Only shown when user is not logged in */}
+      {!user && <ActionBlock />}
 
       <Footer />
     </div>

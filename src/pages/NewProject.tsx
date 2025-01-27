@@ -154,9 +154,9 @@ export default function NewProject() {
                   <SelectValue placeholder="Sélectionnez un type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="construction">Construction</SelectItem>
                   <SelectItem value="purchase">Achat</SelectItem>
                   <SelectItem value="rental">Location</SelectItem>
+                  <SelectItem value="sale">Vente</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -45,20 +45,19 @@ export const ProjectsManagement = () => {
       let query = supabase
         .from('real_estate_projects')
         .select(`
-          id,
-          title,
-          description,
-          project_type,
-          status_details,
-          created_at,
-          updated_at,
-          status,
-          payment_status,
-          price,
-          is_admin,
-          user_id,
-          user:user_dashboard (
-            id,
+          real_estate_projects:id,
+          real_estate_projects:title,
+          real_estate_projects:description,
+          real_estate_projects:project_type,
+          real_estate_projects:status_details,
+          real_estate_projects:created_at,
+          real_estate_projects:updated_at,
+          real_estate_projects:status,
+          real_estate_projects:payment_status,
+          real_estate_projects:price,
+          real_estate_projects:is_admin,
+          real_estate_projects:user_id,
+          user:user_dashboard!real_estate_projects_user_id_fkey (
             full_name
           )
         `);

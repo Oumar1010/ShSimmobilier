@@ -44,19 +44,44 @@ export default function NewProject() {
         return;
       }
 
+      console.log("Checking user dashboard for user:", user.id);
+      
       // Vérifier si l'utilisateur a un profil dans user_dashboard
       const { data: userDashboard, error: userDashboardError } = await supabase
         .from("user_dashboard")
         .select("id")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
 
-      if (userDashboardError || !userDashboard) {
+      console.log("User dashboard response:", { userDashboard, userDashboardError });
+
+      if (userDashboardError) {
         console.error("Erreur lors de la vérification du profil:", userDashboardError);
-        toast.error("Erreur lors de la création du projet. Profil utilisateur non trouvé.");
+        toast.error("Erreur lors de la vérification du profil utilisateur");
         return;
       }
 
+      // Si le profil n'existe pas, on le crée
+      if (!userDashboard) {
+        console.log("Creating user dashboard for user:", user.id);
+        const { error: createError } = await supabase
+          .from("user_dashboard")
+          .insert([
+            {
+              id: user.id,
+              full_name: user.user_metadata.full_name
+            }
+          ]);
+
+        if (createError) {
+          console.error("Erreur lors de la création du profil:", createError);
+          toast.error("Erreur lors de la création du profil utilisateur");
+          return;
+        }
+      }
+
+      console.log("Creating project for user:", user.id);
+      
       const { error } = await supabase
         .from("real_estate_projects")
         .insert([

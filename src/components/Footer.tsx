@@ -7,7 +7,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact</h3>
-            <div className="space-y-2">
+            <div className="space-y-4">
               <p className="flex items-center">
                 <Phone className="h-4 w-4 mr-2" />
                 +221 77 209 05 77
@@ -16,10 +16,22 @@ export const Footer = () => {
                 <Mail className="h-4 w-4 mr-2" />
                 contact@shs-immobilier.com
               </p>
-              <p className="flex items-center">
-                <MapPin className="h-4 w-4 mr-2" />
-                Dakar, Sénégal
-              </p>
+              <div className="space-y-2">
+                <p className="flex items-start">
+                  <MapPin className="h-4 w-4 mr-2 mt-1 flex-shrink-0" />
+                  <span>
+                    <strong className="block text-sm text-white/80">Sénégal :</strong>
+                    Arafat, Rufisque
+                  </span>
+                </p>
+                <p className="flex items-start">
+                  <MapPin className="h-4 w-4 mr-2 mt-1 flex-shrink-0" />
+                  <span>
+                    <strong className="block text-sm text-white/80">France :</strong>
+                    72 R. de Turbigo, 75003 Paris
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
           
@@ -40,7 +52,7 @@ export const Footer = () => {
 
           <div className="flex flex-col items-center md:items-start">
             <p className="text-sm text-center md:text-left">
-              Votre partenaire immobilier de confiance au Sénégal
+              Votre partenaire immobilier de confiance au Sénégal et en France
             </p>
           </div>
         </div>

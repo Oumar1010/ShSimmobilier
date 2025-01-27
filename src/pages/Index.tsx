@@ -1,4 +1,4 @@
-import { Building2, Key, Construction } from "lucide-react";
+import { Building2, Key, Construction, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -119,13 +119,27 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold mb-8">Nous Contacter</h2>
-            <div className="space-y-4">
+            <div className="space-y-6">
               <p className="text-lg">
                 Téléphone: <a href="tel:+221772090577" className="text-primary hover:text-secondary">+221 77 209 05 77</a>
               </p>
               <p className="text-lg">
                 Email: <a href="mailto:contact@shs-immobilier.com" className="text-primary hover:text-secondary">contact@shs-immobilier.com</a>
               </p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-center space-x-2">
+                  <MapPin className="h-5 w-5 text-primary" />
+                  <p className="text-lg">
+                    <strong className="text-primary">Sénégal :</strong> Arafat, Rufisque
+                  </p>
+                </div>
+                <div className="flex items-center justify-center space-x-2">
+                  <MapPin className="h-5 w-5 text-primary" />
+                  <p className="text-lg">
+                    <strong className="text-primary">France :</strong> 72 R. de Turbigo, 75003 Paris
+                  </p>
+                </div>
+              </div>
               <Button 
                 size="lg" 
                 className="bg-[#25D366] hover:bg-[#25D366]/90"

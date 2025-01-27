@@ -1,28 +1,25 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-  Building2, 
-  Clock, 
-  CheckCircle2, 
-  AlertCircle, 
-  Home,
-  FileText,
-  Construction,
-  Eye,
-  Edit2,
-  Trash2,
-  Plus
-} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import {
+  Building2,
+  Home,
+  Landmark,
+  PlusCircle,
+  Store,
+  Trash2,
+} from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,85 +32,36 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-type Project = {
-  id: string;
-  title: string;
-  description: string | null;
-  project_type: 'construction' | 'purchase' | 'rental';
-  status_details: 'en_cours' | 'termine' | 'annule';
-  created_at: string;
-};
-
-const getProjectTypeIcon = (type: Project['project_type']) => {
-  switch (type) {
-    case 'construction':
-      return Construction;
-    case 'purchase':
-      return Home;
-    case 'rental':
-      return FileText;
-    default:
-      return Building2;
-  }
-};
-
-const getProjectTypeLabel = (type: Project['project_type']) => {
-  switch (type) {
-    case 'construction':
-      return 'Construction';
-    case 'purchase':
-      return 'Achat';
-    case 'rental':
-      return 'Location';
-    default:
-      return type;
-  }
-};
-
-const getStatusIcon = (status: Project['status_details']) => {
-  switch (status) {
-    case 'en_cours':
-      return Clock;
-    case 'termine':
-      return CheckCircle2;
-    case 'annule':
-      return AlertCircle;
-    default:
-      return Building2;
-  }
-};
-
-const getStatusLabel = (status: Project['status_details']) => {
-  switch (status) {
-    case 'en_cours':
-      return 'En cours';
-    case 'termine':
-      return 'Terminé';
-    case 'annule':
-      return 'Annulé';
-    default:
-      return status;
-  }
-};
-
-const getStatusColor = (status: Project['status_details']) => {
-  switch (status) {
-    case 'en_cours':
-      return 'text-blue-600 bg-blue-100';
-    case 'termine':
-      return 'text-green-600 bg-green-100';
-    case 'annule':
-      return 'text-red-600 bg-red-100';
-    default:
-      return 'text-gray-600 bg-gray-100';
-  }
-};
-
 export const ProjectsList = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
   const navigate = useNavigate();
+
+  const getProjectTypeIcon = (type: string) => {
+    switch (type) {
+      case "residential":
+        return <Home className="h-6 w-6" />;
+      case "commercial":
+        return <Store className="h-6 w-6" />;
+      case "land":
+        return <Landmark className="h-6 w-6" />;
+      default:
+        return <Building2 className="h-6 w-6" />;
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "en_cours":
+        return "bg-yellow-500";
+      case "termine":
+        return "bg-green-500";
+      case "annule":
+        return "bg-red-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
 
   const fetchProjects = async () => {
     try {
@@ -122,12 +70,13 @@ export const ProjectsList = () => {
       
       if (!user) {
         console.log("No user found");
+        setLoading(false);
         return;
       }
 
       console.log("User ID:", user.id);
       const { data, error } = await supabase
-        .from('real_estate_projects')
+        .from("real_estate_projects")
         .select(`
           id,
           title,
@@ -140,69 +89,34 @@ export const ProjectsList = () => {
 
       if (error) {
         console.error('Error fetching projects:', error);
-        throw error;
+        toast.error("Erreur lors du chargement des projets");
+        return;
       }
 
-      console.log("Fetched projects:", data);
-      // Validate and transform the project type
-      const validatedProjects = (data || []).map(project => {
-        // Ensure project_type is one of the allowed values
-        let validatedType: Project['project_type'] = 'purchase'; // Default value
-        if (['construction', 'purchase', 'rental'].includes(project.project_type)) {
-          validatedType = project.project_type as Project['project_type'];
-        }
-
-        // Ensure status_details is one of the allowed values
-        let validatedStatus: Project['status_details'] = 'en_cours'; // Default value
-        if (['en_cours', 'termine', 'annule'].includes(project.status_details)) {
-          validatedStatus = project.status_details as Project['status_details'];
-        }
-
-        return {
-          id: project.id,
-          title: project.title,
-          description: project.description,
-          project_type: validatedType,
-          status_details: validatedStatus,
-          created_at: project.created_at,
-        };
-      });
-
-      setProjects(validatedProjects);
+      console.log("Projects fetched:", data);
+      setProjects(data || []);
     } catch (error) {
-      console.error('Error fetching projects:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger les projets immobiliers.",
-        variant: "destructive",
-      });
+      console.error('Error in fetchProjects:', error);
+      toast.error("Une erreur est survenue lors du chargement des projets");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async (projectId: string) => {
+  const deleteProject = async (id: string) => {
     try {
       const { error } = await supabase
-        .from('real_estate_projects')
+        .from("real_estate_projects")
         .delete()
-        .eq('id', projectId);
+        .eq("id", id);
 
       if (error) throw error;
 
-      toast({
-        title: "Succès",
-        description: "Le projet a été supprimé avec succès.",
-      });
-
-      fetchProjects();
+      setProjects((prev) => prev.filter((project) => project.id !== id));
+      toast.success("Projet supprimé avec succès");
     } catch (error) {
       console.error('Error deleting project:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de supprimer le projet.",
-        variant: "destructive",
-      });
+      toast.error("Erreur lors de la suppression du projet");
     }
   };
 
@@ -218,123 +132,87 @@ export const ProjectsList = () => {
     );
   }
 
-  if (projects.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <Building2 className="mx-auto h-12 w-12 text-gray-400" />
-        <h3 className="mt-4 text-lg font-semibold text-gray-900">Aucun projet</h3>
-        <p className="mt-2 text-sm text-gray-500">
-          Commencez par créer votre premier projet immobilier.
-        </p>
-        <Button 
-          onClick={() => navigate("/projects/new")}
-          className="mt-4 bg-primary hover:bg-primary/90 text-white"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Créer un projet
-        </Button>
-      </div>
-    );
-  }
-
   return (
-    <div>
-      <div className="mb-8 flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-900">Mes Projets</h2>
-        <Button 
-          onClick={() => navigate("/projects/new")}
-          className="bg-primary hover:bg-primary/90 text-white transform transition-transform duration-200 hover:scale-105"
-        >
-          <Plus className="mr-2 h-4 w-4" />
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Mes Projets</h2>
+        <Button onClick={() => navigate("/projects/new")}>
+          <PlusCircle className="mr-2 h-4 w-4" />
           Nouveau Projet
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project) => {
-          const ProjectTypeIcon = getProjectTypeIcon(project.project_type);
-          const StatusIcon = getStatusIcon(project.status_details);
-          const statusColor = getStatusColor(project.status_details);
-
-          return (
-            <Card 
-              key={project.id}
-              className="group hover:shadow-lg transition-shadow duration-200"
-            >
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-xl font-bold">
-                  <div className="flex items-center space-x-2">
-                    <ProjectTypeIcon className="h-5 w-5 text-primary" />
-                    <span>{project.title}</span>
+        {projects.map((project) => (
+          <Card key={project.id} className="flex flex-col">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  {getProjectTypeIcon(project.project_type)}
+                  <div>
+                    <CardTitle className="text-lg">{project.title}</CardTitle>
+                    <CardDescription className="text-sm text-gray-500">
+                      {new Date(project.created_at).toLocaleDateString()}
+                    </CardDescription>
                   </div>
-                </CardTitle>
-                <div className={`px-2.5 py-0.5 rounded-full text-xs font-medium flex items-center space-x-1 ${statusColor}`}>
-                  <StatusIcon className="h-3 w-3" />
-                  <span>{getStatusLabel(project.status_details)}</span>
                 </div>
-              </CardHeader>
-
-              <CardContent className="pt-2">
-                <p className="text-sm text-gray-500 line-clamp-2">
-                  {project.description || "Aucune description"}
-                </p>
-                <div className="mt-4">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                    {getProjectTypeLabel(project.project_type)}
-                  </span>
-                </div>
-              </CardContent>
-
-              <CardFooter className="flex justify-between pt-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 mr-2"
-                  onClick={() => navigate(`/projects/${project.id}`)}
+                <Badge
+                  className={`${getStatusColor(
+                    project.status_details
+                  )} text-white capitalize`}
                 >
-                  <Eye className="mr-2 h-4 w-4" />
-                  Voir les détails
-                </Button>
-                <div className="flex space-x-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => navigate(`/projects/${project.id}/edit`)}
-                  >
-                    <Edit2 className="h-4 w-4 text-blue-600" />
+                  {project.status_details?.replace("_", " ")}
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="flex-grow">
+              <p className="text-sm text-gray-600 line-clamp-3">
+                {project.description}
+              </p>
+            </CardContent>
+            <CardFooter className="flex justify-end space-x-2">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" size="sm">
+                    <Trash2 className="h-4 w-4" />
                   </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                      >
-                        <Trash2 className="h-4 w-4 text-red-600" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Cette action ne peut pas être annulée. Le projet sera définitivement supprimé.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Annuler</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => handleDelete(project.id)}
-                          className="bg-red-600 hover:bg-red-700"
-                        >
-                          Supprimer
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-              </CardFooter>
-            </Card>
-          );
-        })}
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Cette action est irréversible. Le projet sera définitivement
+                      supprimé.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Annuler</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => deleteProject(project.id)}
+                      className="bg-red-500 hover:bg-red-600"
+                    >
+                      Supprimer
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </CardFooter>
+          </Card>
+        ))}
+
+        {projects.length === 0 && (
+          <div className="col-span-full text-center py-10">
+            <p className="text-gray-500">Aucun projet pour le moment</p>
+            <Button
+              variant="outline"
+              className="mt-4"
+              onClick={() => navigate("/projects/new")}
+            >
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Créer mon premier projet
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

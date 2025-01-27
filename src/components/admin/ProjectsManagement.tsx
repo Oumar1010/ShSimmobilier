@@ -12,7 +12,7 @@ type Project = {
   project_type: string;
   status_details: string | null;
   user?: {
-    email: string;
+    full_name: string | null;
   } | null;
 };
 

@@ -8,7 +8,7 @@ type Project = {
   project_type: string;
   status_details: string | null;
   user?: {
-    email: string;
+    full_name: string | null;
   } | null;
 };
 
@@ -25,7 +25,7 @@ export const ProjectCard = ({ project, onDelete, onUpdateStatus }: ProjectCardPr
         <div>
           <h3 className="font-semibold">{project.title}</h3>
           <p className="text-sm text-gray-500">
-            Propriétaire: {project.user?.email || "Non assigné"}
+            Propriétaire: {project.user?.full_name || "Non assigné"}
           </p>
           <p className="text-sm text-gray-500">
             Type: {project.project_type}

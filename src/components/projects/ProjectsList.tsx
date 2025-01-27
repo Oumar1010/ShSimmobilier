@@ -9,7 +9,7 @@ type Project = {
   title: string;
   description: string | null;
   project_type: 'construction' | 'purchase' | 'rental';
-  status: 'pending' | 'in_progress' | 'completed';
+  status_details: 'en_cours' | 'termine' | 'annule';
   created_at: string;
 };
 
@@ -17,37 +17,37 @@ const isValidProjectType = (type: string): type is Project['project_type'] => {
   return ['construction', 'purchase', 'rental'].includes(type);
 };
 
-const isValidStatus = (status: string): status is Project['status'] => {
-  return ['pending', 'in_progress', 'completed'].includes(status);
+const isValidStatus = (status: string): type is Project['status_details'] => {
+  return ['en_cours', 'termine', 'annule'].includes(status);
 };
 
 const validateProject = (project: any): Project => {
   if (!isValidProjectType(project.project_type)) {
     throw new Error(`Invalid project type: ${project.project_type}`);
   }
-  if (!isValidStatus(project.status)) {
-    throw new Error(`Invalid status: ${project.status}`);
+  if (!isValidStatus(project.status_details)) {
+    throw new Error(`Invalid status: ${project.status_details}`);
   }
   return {
     id: project.id,
     title: project.title,
     description: project.description,
     project_type: project.project_type,
-    status: project.status,
+    status_details: project.status_details,
     created_at: project.created_at,
   };
 };
 
-const getStatusIcon = (status: Project['status']) => {
+const getStatusIcon = (status: Project['status_details']) => {
   switch (status) {
-    case 'pending':
+    case 'en_cours':
       return Clock;
-    case 'in_progress':
-      return Building2;
-    case 'completed':
+    case 'termine':
       return CheckCircle2;
-    default:
+    case 'annule':
       return AlertCircle;
+    default:
+      return Building2;
   }
 };
 
@@ -61,6 +61,19 @@ const getProjectTypeLabel = (type: Project['project_type']) => {
       return 'Location';
     default:
       return type;
+  }
+};
+
+const getStatusLabel = (status: Project['status_details']) => {
+  switch (status) {
+    case 'en_cours':
+      return 'En cours';
+    case 'termine':
+      return 'Terminé';
+    case 'annule':
+      return 'Annulé';
+    default:
+      return status;
   }
 };
 
@@ -79,7 +92,6 @@ export const ProjectsList = () => {
 
         if (error) throw error;
 
-        // Validate and transform the data
         const validatedProjects = (data || []).map(validateProject);
         setProjects(validatedProjects);
       } catch (error) {
@@ -113,9 +125,6 @@ export const ProjectsList = () => {
         <p className="mt-2 text-sm text-gray-500">
           Commencez par créer votre premier projet immobilier.
         </p>
-        <Button className="mt-4" onClick={() => console.log('Create project')}>
-          Nouveau Projet
-        </Button>
       </div>
     );
   }
@@ -123,7 +132,7 @@ export const ProjectsList = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {projects.map((project) => {
-        const StatusIcon = getStatusIcon(project.status);
+        const StatusIcon = getStatusIcon(project.status_details);
         return (
           <div
             key={project.id}
@@ -138,17 +147,17 @@ export const ProjectsList = () => {
             <p className="text-sm text-gray-500 mb-4 line-clamp-2">
               {project.description || "Aucune description"}
             </p>
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col gap-2">
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
                 {getProjectTypeLabel(project.project_type)}
               </span>
-              <Button variant="outline" size="sm">
-                Voir détails
-              </Button>
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                {getStatusLabel(project.status_details)}
+              </span>
             </div>
           </div>
-        )
+        );
       })}
     </div>
   );
-};
+}

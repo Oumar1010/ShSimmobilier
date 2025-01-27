@@ -123,6 +123,7 @@ export type Database = {
           price: number | null
           project_type: string
           status: string
+          status_details: string | null
           title: string
           updated_at: string
           user_id: string | null
@@ -135,6 +136,7 @@ export type Database = {
           price?: number | null
           project_type: string
           status?: string
+          status_details?: string | null
           title: string
           updated_at?: string
           user_id?: string | null
@@ -147,6 +149,7 @@ export type Database = {
           price?: number | null
           project_type?: string
           status?: string
+          status_details?: string | null
           title?: string
           updated_at?: string
           user_id?: string | null

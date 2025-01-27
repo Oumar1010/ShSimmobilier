@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { Building2 } from "lucide-react";
 
 export default function NewProject() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ export default function NewProject() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [projectType, setProjectType] = useState("");
+  const [status, setStatus] = useState("en_cours");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +36,7 @@ export default function NewProject() {
             title,
             description,
             project_type: projectType,
+            status_details: status,
             user_id: user.id,
           },
         ]);
@@ -53,18 +56,22 @@ export default function NewProject() {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">Nouveau Projet</h1>
+          <div className="flex items-center gap-2 mb-8">
+            <Building2 className="h-8 w-8 text-primary" />
+            <h1 className="text-3xl font-bold text-gray-900">Nouveau Projet</h1>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow">
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                Titre du projet
+                Nom du projet
               </label>
               <Input
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
+                className="mt-1"
               />
             </div>
 
@@ -86,13 +93,29 @@ export default function NewProject() {
                 Type de projet
               </label>
               <Select onValueChange={setProjectType} required>
-                <SelectTrigger>
+                <SelectTrigger className="mt-1">
                   <SelectValue placeholder="Sélectionnez un type" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="construction">Construction</SelectItem>
                   <SelectItem value="purchase">Achat</SelectItem>
                   <SelectItem value="rental">Location</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+                Statut du projet
+              </label>
+              <Select onValueChange={setStatus} defaultValue="en_cours">
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Sélectionnez un statut" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en_cours">En cours</SelectItem>
+                  <SelectItem value="termine">Terminé</SelectItem>
+                  <SelectItem value="annule">Annulé</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -1,49 +1,17 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
-import { Calendar } from "@/components/ui/calendar";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { CalendarIcon, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-
-const phoneRegex = new RegExp(
-  /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
-);
-
-const formSchema = z.object({
-  userName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
-  email: z.string().email("Email invalide"),
-  phone: z.string().regex(phoneRegex, "Numéro de téléphone invalide"),
-  appointmentDate: z.date({
-    required_error: "Veuillez sélectionner une date",
-  }),
-  appointmentTime: z.string().min(1, "Veuillez sélectionner une heure"),
-});
+import { Form } from "@/components/ui/form";
+import { AppointmentDateField } from "./appointments/AppointmentDateField";
+import { AppointmentTimeField } from "./appointments/AppointmentTimeField";
+import { ContactFields } from "./appointments/ContactFields";
+import { appointmentFormSchema } from "./appointments/types";
+import { useAppointmentSubmit } from "./appointments/useAppointmentSubmit";
 
 export function AppointmentForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm({
+    resolver: zodResolver(appointmentFormSchema),
     defaultValues: {
       userName: "",
       email: "",
@@ -52,92 +20,12 @@ export function AppointmentForm() {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsSubmitting(true);
-    try {
-      console.log("Submitting appointment form:", values);
+  const { submitAppointment, isSubmitting } = useAppointmentSubmit();
 
-      // Insert appointment into Supabase
-      const { data: appointment, error } = await supabase
-        .from("appointments")
-        .insert([
-          {
-            user_name: values.userName,
-            email: values.email,
-            phone: values.phone,
-            appointment_date: format(values.appointmentDate, "yyyy-MM-dd"),
-            appointment_time: values.appointmentTime,
-            status: "pending",
-          },
-        ])
-        .select()
-        .single();
-
-      if (error) {
-        console.error("Error creating appointment:", error);
-        throw error;
-      }
-
-      console.log("Appointment created:", appointment);
-
-      // Send confirmation email
-      const emailResponse = await supabase.functions.invoke("send-email", {
-        body: {
-          to: [values.email],
-          subject: "Confirmation de rendez-vous - SHS Immobilier",
-          html: `
-            <h1>Confirmation de votre rendez-vous</h1>
-            <p>Cher(e) ${values.userName},</p>
-            <p>Votre rendez-vous avec SHS Immobilier a été confirmé pour le ${format(
-              values.appointmentDate,
-              "d MMMM yyyy",
-              { locale: fr }
-            )} à ${values.appointmentTime}.</p>
-            <p>Nous avons hâte de vous rencontrer !</p>
-            <p>Cordialement,<br>L'équipe SHS Immobilier</p>
-          `,
-        },
-      });
-
-      if (emailResponse.error) {
-        console.error("Error sending confirmation email:", emailResponse.error);
-        throw emailResponse.error;
-      }
-
-      console.log("Confirmation email sent successfully");
-
-      // Generate WhatsApp link
-      const whatsappMessage = encodeURIComponent(
-        `Bonjour, je confirme mon rendez-vous pour le ${format(
-          values.appointmentDate,
-          "d MMMM yyyy",
-          { locale: fr }
-        )} à ${values.appointmentTime}. Mon nom est ${
-          values.userName
-        }. Email: ${values.email}`
-      );
-      const whatsappLink = `https://wa.me/+33769316558?text=${whatsappMessage}`;
-
-      toast.success(
-        <div className="flex flex-col gap-4">
-          <p>Rendez-vous confirmé !</p>
-          <Button
-            onClick={() => window.open(whatsappLink, "_blank")}
-            className="bg-[#25D366] hover:bg-[#25D366]/90"
-          >
-            Confirmer sur WhatsApp
-          </Button>
-        </div>
-      );
-
+  const onSubmit = async (values: z.infer<typeof appointmentFormSchema>) => {
+    const success = await submitAppointment(values);
+    if (success) {
       form.reset();
-    } catch (error: any) {
-      console.error("Error submitting appointment form:", error);
-      toast.error(
-        "Une erreur est survenue lors de la prise de rendez-vous. Veuillez réessayer."
-      );
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -148,110 +36,11 @@ export function AppointmentForm() {
       </h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="userName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nom complet</FormLabel>
-                <FormControl>
-                  <Input placeholder="John Doe" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <ContactFields form={form} />
+          <AppointmentDateField form={form} />
+          <AppointmentTimeField form={form} />
 
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="john@example.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Téléphone</FormLabel>
-                <FormControl>
-                  <Input placeholder="+33 X XX XX XX XX" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="appointmentDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Date du rendez-vous</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP", { locale: fr })
-                        ) : (
-                          <span>Choisir une date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                      locale={fr}
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="appointmentTime"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Heure du rendez-vous</FormLabel>
-                <FormControl>
-                  <Input type="time" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isSubmitting}
-          >
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

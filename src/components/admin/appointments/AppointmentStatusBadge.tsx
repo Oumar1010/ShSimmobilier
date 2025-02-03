@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 
-type AppointmentStatus = "pending" | "confirmed" | "cancelled";
+export type AppointmentStatus = "pending" | "confirmed" | "cancelled";
 
 const statusConfig = {
   pending: { label: "En attente", className: "bg-yellow-100 text-yellow-800 hover:bg-yellow-100" },

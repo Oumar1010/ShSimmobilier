@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { AppointmentStatusBadge } from "./AppointmentStatusBadge";
+import { AppointmentStatusBadge, AppointmentStatus } from "./AppointmentStatusBadge";
 import { EditAppointmentDialog } from "./EditAppointmentDialog";
 
 type Appointment = {
@@ -24,7 +24,7 @@ type Appointment = {
   appointment_date: string;
   appointment_time: string;
   purpose: string;
-  status: string;
+  status: AppointmentStatus;
   created_at: string;
 };
 
@@ -48,7 +48,13 @@ export const AppointmentsManagement = () => {
       if (error) throw error;
       
       console.log("Fetched appointments:", data);
-      setAppointments(data || []);
+      // Ensure the status is of type AppointmentStatus
+      const typedAppointments = data?.map(appointment => ({
+        ...appointment,
+        status: appointment.status as AppointmentStatus
+      })) || [];
+      
+      setAppointments(typedAppointments);
     } catch (error: any) {
       console.error("Error fetching appointments:", error);
       toast.error("Erreur lors du chargement des rendez-vous");
@@ -57,7 +63,7 @@ export const AppointmentsManagement = () => {
     }
   };
 
-  const updateAppointmentStatus = async (id: number, newStatus: string) => {
+  const updateAppointmentStatus = async (id: number, newStatus: AppointmentStatus) => {
     try {
       console.log("Updating appointment status:", { id, newStatus });
       const { error } = await supabase

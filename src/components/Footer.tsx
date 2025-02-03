@@ -8,10 +8,22 @@ export const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact</h3>
             <div className="space-y-4">
-              <p className="flex items-center">
-                <Phone className="h-4 w-4 mr-2" />
-                +221 77 209 05 77
-              </p>
+              <div className="space-y-2">
+                <p className="flex items-center">
+                  <Phone className="h-4 w-4 mr-2" />
+                  <span>
+                    <strong className="block text-sm text-white/80">Sénégal :</strong>
+                    00221769844092
+                  </span>
+                </p>
+                <p className="flex items-center">
+                  <Phone className="h-4 w-4 mr-2" />
+                  <span>
+                    <strong className="block text-sm text-white/80">France :</strong>
+                    +33769316557
+                  </span>
+                </p>
+              </div>
               <p className="flex items-center">
                 <Mail className="h-4 w-4 mr-2" />
                 contact@shs-immobilier.com
@@ -38,6 +50,9 @@ export const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Liens Rapides</h3>
             <div className="space-y-2">
+              <a href="/listings" className="block hover:text-secondary transition-colors">
+                Annonces Immobilières
+              </a>
               <a href="#services" className="block hover:text-secondary transition-colors">
                 Nos Services
               </a>

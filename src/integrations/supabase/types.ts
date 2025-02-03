@@ -143,6 +143,45 @@ export type Database = {
           },
         ]
       }
+      real_estate_listings: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          images: string[] | null
+          location: string
+          price: number
+          status: string
+          title: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          images?: string[] | null
+          location: string
+          price: number
+          status?: string
+          title: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          images?: string[] | null
+          location?: string
+          price?: number
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       real_estate_projects: {
         Row: {
           created_at: string

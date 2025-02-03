@@ -10,6 +10,11 @@ const menuItems = [
     icon: Home,
   },
   {
+    name: "Annonces",
+    href: "/listings",
+    icon: Search,
+  },
+  {
     name: "Nos Services",
     href: "/#services",
     icon: Briefcase,

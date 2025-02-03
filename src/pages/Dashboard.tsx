@@ -7,6 +7,7 @@ import { UserManagement } from "@/components/admin/UserManagement";
 import { ProjectsManagement } from "@/components/admin/ProjectsManagement";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { ListingsManagement } from "@/components/admin/listings/ListingsManagement";
+import { AppointmentsManagement } from "@/components/admin/appointments/AppointmentsManagement";
 import { Building2, Shield, Home, Calendar } from "lucide-react";
 import { UserBlock } from "@/components/user/UserBlock";
 import {
@@ -18,6 +19,8 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+
+// ... keep existing code (imports and initial part of the component)
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -139,6 +142,7 @@ export default function Dashboard() {
           {isAdmin ? (
             <div className="space-y-8">
               <AdminDashboard />
+              <AppointmentsManagement />
               <ListingsManagement />
               <UserManagement />
               <ProjectsManagement />

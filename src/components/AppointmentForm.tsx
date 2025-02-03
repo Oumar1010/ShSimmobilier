@@ -6,23 +6,24 @@ import { Form } from "@/components/ui/form";
 import { AppointmentDateField } from "./appointments/AppointmentDateField";
 import { AppointmentTimeField } from "./appointments/AppointmentTimeField";
 import { ContactFields } from "./appointments/ContactFields";
-import { appointmentFormSchema } from "./appointments/types";
+import { appointmentFormSchema, type AppointmentFormValues } from "./appointments/types";
 import { useAppointmentSubmit } from "./appointments/useAppointmentSubmit";
 
 export function AppointmentForm() {
-  const form = useForm({
+  const form = useForm<AppointmentFormValues>({
     resolver: zodResolver(appointmentFormSchema),
     defaultValues: {
       userName: "",
       email: "",
       phone: "",
       appointmentTime: "",
+      appointmentDate: undefined,
     },
   });
 
   const { submitAppointment, isSubmitting } = useAppointmentSubmit();
 
-  const onSubmit = async (values: z.infer<typeof appointmentFormSchema>) => {
+  const onSubmit = async (values: AppointmentFormValues) => {
     const success = await submitAppointment(values);
     if (success) {
       form.reset();

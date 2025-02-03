@@ -26,17 +26,27 @@ interface NewListingFormProps {
   onSuccess: () => void;
 }
 
+type FormValues = {
+  title: string;
+  description: string;
+  price: string;
+  location: string;
+  status: string;
+  images?: string[];
+};
+
 export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     defaultValues: {
       title: "",
       description: "",
       price: "",
       location: "",
       status: "draft",
+      images: [],
     },
   });
 
@@ -75,7 +85,7 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
     }
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormValues) => {
     try {
       setSaving(true);
       const { error } = await supabase.from("real_estate_listings").insert({

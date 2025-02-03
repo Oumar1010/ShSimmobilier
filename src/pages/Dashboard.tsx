@@ -6,6 +6,7 @@ import { ProjectsList } from "@/components/projects/ProjectsList";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { ProjectsManagement } from "@/components/admin/ProjectsManagement";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
+import { ListingsManagement } from "@/components/admin/listings/ListingsManagement";
 import { Building2, Shield, Home, Calendar } from "lucide-react";
 import { UserBlock } from "@/components/user/UserBlock";
 import {

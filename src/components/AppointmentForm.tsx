@@ -21,7 +21,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -55,6 +55,8 @@ export function AppointmentForm() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     try {
+      console.log("Submitting appointment form:", values);
+
       // Insert appointment into Supabase
       const { data: appointment, error } = await supabase
         .from("appointments")
@@ -65,12 +67,18 @@ export function AppointmentForm() {
             phone: values.phone,
             appointment_date: format(values.appointmentDate, "yyyy-MM-dd"),
             appointment_time: values.appointmentTime,
+            status: "pending",
           },
         ])
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error creating appointment:", error);
+        throw error;
+      }
+
+      console.log("Appointment created:", appointment);
 
       // Send confirmation email
       const emailResponse = await supabase.functions.invoke("send-email", {
@@ -91,7 +99,12 @@ export function AppointmentForm() {
         },
       });
 
-      if (emailResponse.error) throw emailResponse.error;
+      if (emailResponse.error) {
+        console.error("Error sending confirmation email:", emailResponse.error);
+        throw emailResponse.error;
+      }
+
+      console.log("Confirmation email sent successfully");
 
       // Generate WhatsApp link
       const whatsappMessage = encodeURIComponent(
@@ -119,7 +132,7 @@ export function AppointmentForm() {
 
       form.reset();
     } catch (error: any) {
-      console.error("Error:", error);
+      console.error("Error submitting appointment form:", error);
       toast.error(
         "Une erreur est survenue lors de la prise de rendez-vous. Veuillez réessayer."
       );
@@ -170,7 +183,7 @@ export function AppointmentForm() {
               <FormItem>
                 <FormLabel>Téléphone</FormLabel>
                 <FormControl>
-                  <Input placeholder="+221 XX XXX XX XX" {...field} />
+                  <Input placeholder="+33 X XX XX XX XX" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -211,6 +224,7 @@ export function AppointmentForm() {
                         date < new Date() || date < new Date("1900-01-01")
                       }
                       initialFocus
+                      locale={fr}
                     />
                   </PopoverContent>
                 </Popover>
@@ -238,7 +252,14 @@ export function AppointmentForm() {
             className="w-full"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "En cours..." : "Prendre rendez-vous"}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                En cours...
+              </>
+            ) : (
+              "Prendre rendez-vous"
+            )}
           </Button>
         </form>
       </Form>

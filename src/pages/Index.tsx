@@ -120,9 +120,14 @@ const Index = () => {
           <div className="text-center">
             <h2 className="text-3xl font-bold mb-8">Nous Contacter</h2>
             <div className="space-y-6">
-              <p className="text-lg">
-                Téléphone: <a href="tel:+221772090577" className="text-primary hover:text-secondary">+221 77 209 05 77</a>
-              </p>
+              <div className="space-y-3">
+                <p className="text-lg">
+                  Téléphone: <a href="tel:+221772090577" className="text-primary hover:text-secondary">+221 77 209 05 77</a>
+                </p>
+                <p className="text-lg">
+                  Téléphone: <a href="tel:+221769844092" className="text-primary hover:text-secondary">+221 76 984 40 92</a>
+                </p>
+              </div>
               <p className="text-lg">
                 Email: <a href="mailto:contact@shs-immobilier.com" className="text-primary hover:text-secondary">contact@shs-immobilier.com</a>
               </p>

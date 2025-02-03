@@ -138,6 +138,7 @@ export default function Dashboard() {
           {isAdmin ? (
             <div className="space-y-8">
               <AdminDashboard />
+              <ListingsManagement />
               <UserManagement />
               <ProjectsManagement />
             </div>

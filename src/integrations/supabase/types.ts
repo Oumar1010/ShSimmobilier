@@ -17,7 +17,9 @@ export type Database = {
           email: string
           id: number
           phone: string
+          purpose: string
           status: string
+          user_id: string | null
           user_name: string
         }
         Insert: {
@@ -27,7 +29,9 @@ export type Database = {
           email: string
           id?: number
           phone: string
+          purpose?: string
           status?: string
+          user_id?: string | null
           user_name: string
         }
         Update: {
@@ -37,7 +41,9 @@ export type Database = {
           email?: string
           id?: number
           phone?: string
+          purpose?: string
           status?: string
+          user_id?: string | null
           user_name?: string
         }
         Relationships: []
@@ -234,6 +240,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      site_configuration: {
+        Row: {
+          created_at: string
+          id: string
+          updated_at: string
+          whatsapp_url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          updated_at?: string
+          whatsapp_url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          updated_at?: string
+          whatsapp_url?: string
+        }
+        Relationships: []
       }
       test: {
         Row: {

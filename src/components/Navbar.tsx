@@ -1,7 +1,9 @@
+
 import { useState } from "react";
 import { Menu, X, Home, Briefcase, Calendar, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 const menuItems = [
   {
@@ -52,13 +54,13 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20">
           {/* Logo */}
-          <a href="/" className="flex items-center">
+          <Link to="/" className="flex items-center">
             <img
               src="/lovable-uploads/14905b3c-b496-4a89-a553-9f9a13204bc6.png"
               alt="shsimmobilier"
               className="h-16 w-auto transform hover:scale-105 transition-transform duration-300"
             />
-          </a>
+          </Link>
           
           {/* Desktop menu */}
           <div className="hidden md:flex items-center space-x-6">
@@ -86,14 +88,23 @@ export const Navbar = () => {
                   {item.name}
                 </Button>
               ) : (
-                <a
+                <Link
                   key={item.name}
-                  href={item.href}
+                  to={item.href.startsWith('/#') ? item.href.substring(1) : item.href}
                   className="flex items-center space-x-2 text-white hover:text-[#FFD700] transition-colors duration-300 group relative"
+                  onClick={() => {
+                    if (item.href.startsWith('/#')) {
+                      const elementId = item.href.substring(2);
+                      const element = document.getElementById(elementId);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }
+                    }
+                  }}
                 >
                   <item.icon className="h-5 w-5 group-hover:text-[#FFD700] transition-colors duration-300" />
                   <span className="font-medium after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-[#FFD700] after:origin-bottom-right after:transition-transform after:duration-300 group-hover:after:scale-x-100 group-hover:after:origin-bottom-left">{item.name}</span>
-                </a>
+                </Link>
               )
             ))}
           </div>
@@ -150,15 +161,24 @@ export const Navbar = () => {
                   {item.name}
                 </Button>
               ) : (
-                <a
+                <Link
                   key={item.name}
-                  href={item.href}
+                  to={item.href.startsWith('/#') ? item.href.substring(1) : item.href}
                   className="flex items-center space-x-3 text-white hover:text-[#FFD700] py-3 px-4 rounded-lg transition-colors duration-300"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => {
+                    if (item.href.startsWith('/#')) {
+                      const elementId = item.href.substring(2);
+                      const element = document.getElementById(elementId);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }
+                    }
+                    setIsOpen(false);
+                  }}
                 >
                   <item.icon className="h-6 w-6" />
                   <span className="font-medium text-lg">{item.name}</span>
-                </a>
+                </Link>
               )
             ))}
           </div>

@@ -8,6 +8,7 @@ import NewProject from "@/pages/NewProject";
 import Listings from "@/pages/Listings";
 import { Toaster } from "@/components/ui/sonner";
 import { FloatingAuthButton } from "@/components/auth/FloatingAuthButton";
+import { ListingsManagement } from "@/components/admin/listings/ListingsManagement";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/new-project" element={<NewProject />} />
         <Route path="/listings" element={<Listings />} />
+        <Route path="/admin/listings" element={<ListingsManagement />} />
       </Routes>
       <Toaster />
     </Router>

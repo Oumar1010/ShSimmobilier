@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { LogIn, User, Settings, LogOut } from "lucide-react";
+import { LogIn, User, Settings, LogOut, Building2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -102,6 +103,13 @@ export const FloatingAuthButton = () => {
             >
               <User className="mr-2 h-4 w-4" />
               Tableau de bord
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={() => navigate("/admin/listings")}
+              className="cursor-pointer hover:bg-primary/10 transition-colors duration-200"
+            >
+              <Building2 className="mr-2 h-4 w-4" />
+              Gestion des annonces
             </DropdownMenuItem>
             <DropdownMenuItem 
               onClick={() => navigate("/change-password")}

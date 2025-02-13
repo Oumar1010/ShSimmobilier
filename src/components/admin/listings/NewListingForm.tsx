@@ -67,7 +67,11 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
           .from("listing_images")
           .upload(filePath, file);
 
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          console.error("Erreur upload:", uploadError);
+          toast.error(`Erreur lors de l'upload de ${file.name}: ${uploadError.message}`);
+          continue;
+        }
 
         const { data: { publicUrl } } = supabase.storage
           .from("listing_images")
@@ -76,11 +80,13 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
         uploadedUrls.push(publicUrl);
       }
 
-      form.setValue("images", uploadedUrls);
-      toast.success("Images ajoutées avec succès");
+      if (uploadedUrls.length > 0) {
+        form.setValue("images", uploadedUrls);
+        toast.success("Images ajoutées avec succès");
+      }
     } catch (error) {
       console.error("Error uploading images:", error);
-      toast.error("Erreur lors de l'upload des images");
+      toast.error("Une erreur est survenue lors de l'upload des images. Veuillez réessayer.");
     } finally {
       setUploading(false);
     }
@@ -94,13 +100,27 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
         price: parseFloat(data.price),
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erreur création annonce:", error);
+        if (error.code === "42501") {
+          toast.error("Vous n'avez pas les permissions nécessaires pour créer une annonce.");
+        } else if (error.code === "23505") {
+          toast.error("Une annonce avec ce titre existe déjà.");
+        } else {
+          toast.error(`Erreur lors de la création de l'annonce: ${error.message}`);
+        }
+        return;
+      }
 
       toast.success("Annonce créée avec succès");
       onSuccess();
     } catch (error) {
       console.error("Error creating listing:", error);
-      toast.error("Erreur lors de la création de l'annonce");
+      if (error instanceof Error) {
+        toast.error(`Erreur lors de la création de l'annonce: ${error.message}`);
+      } else {
+        toast.error("Une erreur inattendue est survenue lors de la création de l'annonce");
+      }
     } finally {
       setSaving(false);
     }

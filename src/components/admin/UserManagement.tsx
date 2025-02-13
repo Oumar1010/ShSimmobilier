@@ -1,8 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Shield, UserMinus, UserPlus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type User = {
   id: string;
@@ -13,10 +15,21 @@ type User = {
 export const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Veuillez vous connecter pour accéder à cette page");
+        navigate("/auth");
+        return;
+      }
+      fetchUsers();
+    };
+
+    checkSession();
+  }, [navigate]);
 
   const fetchUsers = async () => {
     try {

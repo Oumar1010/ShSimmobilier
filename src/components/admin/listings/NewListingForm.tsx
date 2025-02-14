@@ -1,5 +1,5 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -37,8 +37,32 @@ type FormValues = {
 };
 
 export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
+  const navigate = useNavigate();
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Session expirée. Veuillez vous reconnecter.");
+        navigate("/auth");
+      }
+    };
+
+    checkSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        toast.error("Session expirée. Veuillez vous reconnecter.");
+        navigate("/auth");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const form = useForm<FormValues>({
     defaultValues: {
@@ -57,6 +81,14 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
 
     try {
       setUploading(true);
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Session expirée. Veuillez vous reconnecter.");
+        navigate("/auth");
+        return;
+      }
+
       const uploadedUrls = [];
 
       for (const file of files) {
@@ -96,18 +128,17 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
     try {
       setSaving(true);
       
-      // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast.error("Vous devez être connecté pour créer une annonce");
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Session expirée. Veuillez vous reconnecter.");
+        navigate("/auth");
         return;
       }
 
       const { error } = await supabase.from("real_estate_listings").insert({
         ...data,
         price: parseFloat(data.price),
-        user_id: user.id, // Ajout du user_id
+        user_id: session.user.id,
       });
 
       if (error) {

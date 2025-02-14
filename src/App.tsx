@@ -19,9 +19,9 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/new-project" element={<NewProject />} />
+        <Route path="/projects/new" element={<NewProject />} />
         <Route path="/listings" element={<Listings />} />
-        <Route path="/admin/listings" element={<AdminListings />} />
+        <Route path="/listings/admin" element={<AdminListings />} />
       </Routes>
       <Toaster />
     </Router>

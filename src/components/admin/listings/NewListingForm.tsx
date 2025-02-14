@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -46,7 +47,7 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast.error("Session expirée. Veuillez vous reconnecter.");
-        navigate("/auth");
+        navigate("/auth", { state: { returnTo: "/listings/admin" } });
       }
     };
 
@@ -57,7 +58,7 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
         toast.error("Session expirée. Veuillez vous reconnecter.");
-        navigate("/auth");
+        navigate("/auth", { state: { returnTo: "/listings/admin" } });
       }
     });
 
@@ -131,7 +132,7 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast.error("Session expirée. Veuillez vous reconnecter.");
-        navigate("/auth");
+        navigate("/auth", { state: { returnTo: "/listings/admin" } });
         return;
       }
 

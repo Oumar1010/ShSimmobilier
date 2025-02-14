@@ -386,12 +386,6 @@ export type Database = {
         }
         Returns: boolean
       }
-      check_is_admin: {
-        Args: {
-          user_id: string
-        }
-        Returns: boolean
-      }
       check_upcoming_appointments: {
         Args: Record<PropertyKey, never>
         Returns: undefined

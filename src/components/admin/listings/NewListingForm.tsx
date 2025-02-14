@@ -95,9 +95,19 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
   const onSubmit = async (data: FormValues) => {
     try {
       setSaving(true);
+      
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error("Vous devez être connecté pour créer une annonce");
+        return;
+      }
+
       const { error } = await supabase.from("real_estate_listings").insert({
         ...data,
         price: parseFloat(data.price),
+        user_id: user.id, // Ajout du user_id
       });
 
       if (error) {

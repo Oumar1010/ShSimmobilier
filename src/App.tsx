@@ -9,21 +9,27 @@ import Listings from "@/pages/Listings";
 import AdminListings from "@/pages/AdminListings";
 import { Toaster } from "@/components/ui/sonner";
 import { FloatingAuthButton } from "@/components/auth/FloatingAuthButton";
+import { Navbar } from "@/components/Navbar";
 
 function App() {
   return (
     <Router>
-      <FloatingAuthButton />
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/projects/new" element={<NewProject />} />
-        <Route path="/listings" element={<Listings />} />
-        <Route path="/listings/admin" element={<AdminListings />} />
-      </Routes>
-      <Toaster />
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-grow">
+          <FloatingAuthButton />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/projects/new" element={<NewProject />} />
+            <Route path="/listings" element={<Listings />} />
+            <Route path="/listings/admin" element={<AdminListings />} />
+          </Routes>
+        </div>
+        <Toaster />
+      </div>
     </Router>
   );
 }

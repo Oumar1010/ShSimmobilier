@@ -1,37 +1,37 @@
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Index from "@/pages/Index";
-import Auth from "@/pages/Auth";
-import Dashboard from "@/pages/Dashboard";
-import ResetPassword from "@/pages/ResetPassword";
-import NewProject from "@/pages/NewProject";
-import Listings from "@/pages/Listings";
-import AdminListings from "@/pages/AdminListings";
-import { Toaster } from "@/components/ui/sonner";
-import { FloatingAuthButton } from "@/components/auth/FloatingAuthButton";
-import { Navbar } from "@/components/Navbar";
+import { Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+import Auth from "./pages/Auth";
+import Listings from "./pages/Listings";
+import Dashboard from "./pages/Dashboard";
+import ResetPassword from "./pages/ResetPassword";
+import AdminListings from "./pages/AdminListings";
+import NewProject from "./pages/NewProject";
+import { Toaster } from "@/components/ui/toaster";
+import { FloatingAuthButton } from "./components/auth/FloatingAuthButton";
+import { Navbar } from "./components/Navbar";
+import { Suspense } from "react";
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-        <div className="flex-grow">
-          <FloatingAuthButton />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/projects/new" element={<NewProject />} />
-            <Route path="/listings" element={<Listings />} />
-            <Route path="/listings/admin" element={<AdminListings />} />
-          </Routes>
-        </div>
-        <Toaster />
-      </div>
-    </Router>
+    <>
+      <Navbar />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/listings" element={<Listings />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/admin/listings" element={<AdminListings />} />
+          <Route path="/new-project" element={<NewProject />} />
+        </Routes>
+      </Suspense>
+      <FloatingAuthButton />
+      <Toaster />
+    </>
   );
 }
 
 export default App;
+

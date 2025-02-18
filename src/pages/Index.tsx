@@ -1,6 +1,5 @@
-import { Building2, Key, Construction, MapPin } from "lucide-react";
+import { Building2, Key, Construction } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AppointmentForm } from "@/components/AppointmentForm";
 import { LandServices } from "@/components/services/LandServices";
@@ -58,8 +57,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
       {/* Hero Section with New Slider */}
       <HomeSlider />
 

@@ -23,31 +23,36 @@ export const ListingsManagement = () => {
     queryKey: ["listings"],
     queryFn: async () => {
       try {
-        console.log("Fetching listings...");
+        const session = await supabase.auth.getSession();
+        if (!session.data.session) {
+          navigate("/auth");
+          return [];
+        }
+
         const { data, error } = await supabase
           .from("real_estate_listings")
           .select("*")
           .order("created_at", { ascending: false });
 
         if (error) {
+          console.error("Error fetching listings:", error);
           if (error.code === "PGRST116") {
-            // Unauthorized error
             toast.error("Vous n'avez pas les permissions nécessaires");
             navigate("/auth");
             return [];
           }
-          console.error("Error fetching listings:", error);
-          throw error;
+          toast.error("Une erreur est survenue lors du chargement des annonces");
+          return [];
         }
 
-        console.log("Listings fetched:", data);
-        return data;
+        return data || [];
       } catch (error) {
         console.error("Error in query:", error);
         toast.error("Une erreur est survenue lors du chargement des annonces");
         return [];
       }
     },
+    retry: false,
   });
 
   return (

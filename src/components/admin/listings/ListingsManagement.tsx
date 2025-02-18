@@ -12,26 +12,41 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export const ListingsManagement = () => {
+  const navigate = useNavigate();
   const [showNewListingForm, setShowNewListingForm] = useState(false);
 
   const { data: listings, isLoading, refetch } = useQuery({
     queryKey: ["listings"],
     queryFn: async () => {
-      console.log("Fetching listings...");
-      const { data, error } = await supabase
-        .from("real_estate_listings")
-        .select("*")
-        .order("created_at", { ascending: false });
+      try {
+        console.log("Fetching listings...");
+        const { data, error } = await supabase
+          .from("real_estate_listings")
+          .select("*")
+          .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching listings:", error);
-        throw error;
+        if (error) {
+          if (error.code === "PGRST116") {
+            // Unauthorized error
+            toast.error("Vous n'avez pas les permissions nécessaires");
+            navigate("/auth");
+            return [];
+          }
+          console.error("Error fetching listings:", error);
+          throw error;
+        }
+
+        console.log("Listings fetched:", data);
+        return data;
+      } catch (error) {
+        console.error("Error in query:", error);
+        toast.error("Une erreur est survenue lors du chargement des annonces");
+        return [];
       }
-
-      console.log("Listings fetched:", data);
-      return data;
     },
   });
 

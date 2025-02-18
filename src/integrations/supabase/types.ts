@@ -391,6 +391,10 @@ export type Database = {
             }
             Returns: boolean
           }
+      check_if_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       check_upcoming_appointments: {
         Args: Record<PropertyKey, never>
         Returns: undefined

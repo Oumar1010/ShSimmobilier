@@ -380,12 +380,17 @@ export type Database = {
       }
     }
     Functions: {
-      can_access_user_role: {
-        Args: {
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      can_access_user_role:
+        | {
+            Args: Record<PropertyKey, never>
+            Returns: boolean
+          }
+        | {
+            Args: {
+              _user_id: string
+            }
+            Returns: boolean
+          }
       check_upcoming_appointments: {
         Args: Record<PropertyKey, never>
         Returns: undefined

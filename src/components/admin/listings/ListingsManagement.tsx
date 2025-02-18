@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,32 @@ import { useNavigate } from "react-router-dom";
 export const ListingsManagement = () => {
   const navigate = useNavigate();
   const [showNewListingForm, setShowNewListingForm] = useState(false);
+
+  // Vérification initiale du rôle admin
+  useEffect(() => {
+    const checkAdminRole = async () => {
+      const session = await supabase.auth.getSession();
+      if (!session.data.session) {
+        navigate("/auth");
+        return;
+      }
+
+      const { data: roles, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", session.data.session.user.id)
+        .eq("role", "admin")
+        .single();
+
+      if (error || !roles) {
+        console.error("Error checking admin role:", error);
+        toast.error("Accès non autorisé");
+        navigate("/");
+      }
+    };
+
+    checkAdminRole();
+  }, [navigate]);
 
   const { data: listings, isLoading, refetch } = useQuery({
     queryKey: ["listings"],

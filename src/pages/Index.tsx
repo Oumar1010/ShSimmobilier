@@ -1,4 +1,5 @@
-import { Building2, Key, Construction } from "lucide-react";
+
+import { Building2, Key, Construction, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { AppointmentForm } from "@/components/AppointmentForm";

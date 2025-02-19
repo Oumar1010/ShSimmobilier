@@ -102,7 +102,7 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
 
         if (uploadError) {
           console.error("Erreur upload:", uploadError);
-          toast.error(`Erreur lors de l'upload de ${file.name}: ${uploadError.message}`);
+          toast.error(`Erreur lors de l'upload de ${file.name}`);
           continue;
         }
 
@@ -114,12 +114,13 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
       }
 
       if (uploadedUrls.length > 0) {
-        form.setValue("images", uploadedUrls);
+        const currentImages = form.getValues("images") || [];
+        form.setValue("images", [...currentImages, ...uploadedUrls]);
         toast.success("Images ajoutées avec succès");
       }
     } catch (error) {
       console.error("Error uploading images:", error);
-      toast.error("Une erreur est survenue lors de l'upload des images. Veuillez réessayer.");
+      toast.error("Une erreur est survenue lors de l'upload des images");
     } finally {
       setUploading(false);
     }
@@ -144,25 +145,16 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
 
       if (error) {
         console.error("Erreur création annonce:", error);
-        if (error.code === "42501") {
-          toast.error("Vous n'avez pas les permissions nécessaires pour créer une annonce.");
-        } else if (error.code === "23505") {
-          toast.error("Une annonce avec ce titre existe déjà.");
-        } else {
-          toast.error(`Erreur lors de la création de l'annonce: ${error.message}`);
-        }
+        toast.error("Erreur lors de la création de l'annonce. Veuillez réessayer.");
         return;
       }
 
       toast.success("Annonce créée avec succès");
+      form.reset();
       onSuccess();
     } catch (error) {
       console.error("Error creating listing:", error);
-      if (error instanceof Error) {
-        toast.error(`Erreur lors de la création de l'annonce: ${error.message}`);
-      } else {
-        toast.error("Une erreur inattendue est survenue lors de la création de l'annonce");
-      }
+      toast.error("Une erreur inattendue est survenue lors de la création de l'annonce");
     } finally {
       setSaving(false);
     }
@@ -273,6 +265,20 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
               {uploading ? "Upload en cours..." : "Choisir des images"}
             </label>
           </div>
+
+          {/* Preview des images */}
+          {form.watch("images")?.length > 0 && (
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              {form.watch("images")?.map((url, index) => (
+                <img
+                  key={index}
+                  src={url}
+                  alt={`Preview ${index + 1}`}
+                  className="w-full h-40 object-cover rounded-md"
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex justify-end gap-2 pt-4">

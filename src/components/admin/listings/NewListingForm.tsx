@@ -23,24 +23,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface NewListingFormProps {
   onSuccess: () => void;
 }
 
-type FormValues = {
-  title: string;
-  description: string;
-  price: string;
-  location: string;
-  status: string;
-  images?: string[];
-};
+const listingSchema = z.object({
+  title: z.string().min(3, "Le titre doit contenir au moins 3 caractères"),
+  description: z.string().min(10, "La description doit contenir au moins 10 caractères"),
+  price: z.string().min(1, "Le prix est requis"),
+  location: z.string().min(3, "La localisation doit contenir au moins 3 caractères"),
+  status: z.string().min(1, "Le statut est requis"),
+  images: z.array(z.string()).optional(),
+});
+
+type FormValues = z.infer<typeof listingSchema>;
 
 export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
   const navigate = useNavigate();
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(listingSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      price: "",
+      location: "",
+      status: "draft",
+      images: [],
+    },
+  });
 
   useEffect(() => {
     const checkSession = async () => {
@@ -65,17 +81,6 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const form = useForm<FormValues>({
-    defaultValues: {
-      title: "",
-      description: "",
-      price: "",
-      location: "",
-      status: "draft",
-      images: [],
-    },
-  });
-
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
@@ -93,6 +98,18 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
       const uploadedUrls = [];
 
       for (const file of files) {
+        // Vérification de la taille du fichier (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          toast.error(`Le fichier ${file.name} est trop volumineux (max 5MB)`);
+          continue;
+        }
+
+        // Vérification du type de fichier
+        if (!file.type.startsWith('image/')) {
+          toast.error(`Le fichier ${file.name} n'est pas une image`);
+          continue;
+        }
+
         const fileExt = file.name.split(".").pop();
         const filePath = `${crypto.randomUUID()}.${fileExt}`;
 
@@ -102,7 +119,7 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
 
         if (uploadError) {
           console.error("Erreur upload:", uploadError);
-          toast.error(`Erreur lors de l'upload de ${file.name}`);
+          toast.error(`Erreur lors de l'upload de ${file.name}: ${uploadError.message}`);
           continue;
         }
 
@@ -137,15 +154,28 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
         return;
       }
 
+      // Vérification que le prix est un nombre valide
+      const price = parseFloat(data.price);
+      if (isNaN(price) || price <= 0) {
+        toast.error("Le prix doit être un nombre positif");
+        return;
+      }
+
       const { error } = await supabase.from("real_estate_listings").insert({
         ...data,
-        price: parseFloat(data.price),
+        price: price,
         user_id: session.user.id,
       });
 
       if (error) {
         console.error("Erreur création annonce:", error);
-        toast.error("Erreur lors de la création de l'annonce. Veuillez réessayer.");
+        if (error.code === "42501") {
+          toast.error("Vous n'avez pas les permissions nécessaires pour créer une annonce");
+        } else if (error.code === "23505") {
+          toast.error("Une annonce avec ce titre existe déjà");
+        } else {
+          toast.error(`Erreur lors de la création de l'annonce: ${error.message}`);
+        }
         return;
       }
 
@@ -154,7 +184,11 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
       onSuccess();
     } catch (error) {
       console.error("Error creating listing:", error);
-      toast.error("Une erreur inattendue est survenue lors de la création de l'annonce");
+      if (error instanceof Error) {
+        toast.error(`Erreur lors de la création de l'annonce: ${error.message}`);
+      } else {
+        toast.error("Une erreur inattendue est survenue lors de la création de l'annonce");
+      }
     } finally {
       setSaving(false);
     }
@@ -170,7 +204,7 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
             <FormItem>
               <FormLabel>Titre</FormLabel>
               <FormControl>
-                <Input {...field} required />
+                <Input {...field} placeholder="Titre de l'annonce" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -184,7 +218,7 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea {...field} rows={4} />
+                <Textarea {...field} placeholder="Description détaillée" rows={4} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -198,7 +232,7 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
             <FormItem>
               <FormLabel>Prix (XOF)</FormLabel>
               <FormControl>
-                <Input {...field} type="number" required min="0" />
+                <Input {...field} type="number" placeholder="0" min="0" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -212,7 +246,7 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
             <FormItem>
               <FormLabel>Localisation</FormLabel>
               <FormControl>
-                <Input {...field} required />
+                <Input {...field} placeholder="Adresse du bien" />
               </FormControl>
               <FormMessage />
             </FormItem>

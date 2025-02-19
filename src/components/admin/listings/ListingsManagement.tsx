@@ -19,25 +19,27 @@ export const ListingsManagement = () => {
   const navigate = useNavigate();
   const [showNewListingForm, setShowNewListingForm] = useState(false);
 
-  // Vérification initiale du rôle admin
+  // Vérification initiale du rôle admin via la fonction RPC
   useEffect(() => {
     const checkAdminRole = async () => {
-      const session = await supabase.auth.getSession();
-      if (!session.data.session) {
-        navigate("/auth");
-        return;
-      }
+      try {
+        const session = await supabase.auth.getSession();
+        if (!session.data.session) {
+          navigate("/auth");
+          return;
+        }
 
-      const { data: roles, error } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", session.data.session.user.id)
-        .eq("role", "admin")
-        .single();
+        // Utilisation de la fonction RPC check_if_admin
+        const { data: isAdmin, error } = await supabase.rpc('check_if_admin');
 
-      if (error || !roles) {
-        console.error("Error checking admin role:", error);
-        toast.error("Accès non autorisé");
+        if (error || !isAdmin) {
+          console.error("Error checking admin role:", error);
+          toast.error("Accès non autorisé");
+          navigate("/");
+        }
+      } catch (error) {
+        console.error("Error in admin check:", error);
+        toast.error("Une erreur est survenue");
         navigate("/");
       }
     };

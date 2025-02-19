@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Menu, X, Home, Briefcase, Calendar, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const menuItems = [
   {
@@ -32,13 +32,39 @@ const menuItems = [
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const location = useLocation();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Searching for:", searchQuery);
   };
 
+  const handleNavigation = (href: string, e?: React.MouseEvent) => {
+    e?.preventDefault();
+    
+    if (href.startsWith('/#')) {
+      const elementId = href.substring(2);
+      // Si on n'est pas sur la page d'accueil, naviguer d'abord vers celle-ci
+      if (location.pathname !== '/') {
+        window.location.href = href;
+        return;
+      }
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+        setIsOpen(false);
+      }
+    }
+  };
+
   const scrollToAppointment = () => {
+    if (location.pathname !== '/') {
+      window.location.href = '/#appointment';
+      return;
+    }
     const element = document.getElementById('appointment');
     if (element) {
       element.scrollIntoView({ 
@@ -92,15 +118,7 @@ export const Navbar = () => {
                   key={item.name}
                   to={item.href.startsWith('/#') ? item.href.substring(1) : item.href}
                   className="flex items-center space-x-2 text-white hover:text-[#FFD700] transition-colors duration-300 group relative"
-                  onClick={() => {
-                    if (item.href.startsWith('/#')) {
-                      const elementId = item.href.substring(2);
-                      const element = document.getElementById(elementId);
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      }
-                    }
-                  }}
+                  onClick={(e) => item.href.startsWith('/#') && handleNavigation(item.href, e)}
                 >
                   <item.icon className="h-5 w-5 group-hover:text-[#FFD700] transition-colors duration-300" />
                   <span className="font-medium after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-[#FFD700] after:origin-bottom-right after:transition-transform after:duration-300 group-hover:after:scale-x-100 group-hover:after:origin-bottom-left">{item.name}</span>
@@ -165,13 +183,9 @@ export const Navbar = () => {
                   key={item.name}
                   to={item.href.startsWith('/#') ? item.href.substring(1) : item.href}
                   className="flex items-center space-x-3 text-white hover:text-[#FFD700] py-3 px-4 rounded-lg transition-colors duration-300"
-                  onClick={() => {
+                  onClick={(e) => {
                     if (item.href.startsWith('/#')) {
-                      const elementId = item.href.substring(2);
-                      const element = document.getElementById(elementId);
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      }
+                      handleNavigation(item.href, e);
                     }
                     setIsOpen(false);
                   }}

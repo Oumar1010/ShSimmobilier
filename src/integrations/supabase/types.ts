@@ -395,6 +395,12 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      check_role_access: {
+        Args: {
+          user_uuid: string
+        }
+        Returns: boolean
+      }
       check_upcoming_appointments: {
         Args: Record<PropertyKey, never>
         Returns: undefined

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -67,8 +68,8 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
     },
   });
 
-  useEffect(() => {
-    const checkSession = async () => {
+  const checkSession = async () => {
+    try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast({
@@ -77,9 +78,22 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
           variant: "destructive",
         });
         navigate("/auth", { state: { returnTo: "/admin/listings" } });
+        return null;
       }
-    };
+      return session;
+    } catch (error) {
+      console.error("Error checking session:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la vérification de la session.",
+        variant: "destructive",
+      });
+      navigate("/auth", { state: { returnTo: "/admin/listings" } });
+      return null;
+    }
+  };
 
+  useEffect(() => {
     checkSession();
 
     const {
@@ -105,16 +119,8 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
     try {
       setUploading(true);
       
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
-          title: "Session expirée",
-          description: "Veuillez vous reconnecter.",
-          variant: "destructive",
-        });
-        navigate("/auth");
-        return;
-      }
+      const session = await checkSession();
+      if (!session) return;
 
       const uploadedUrls = [];
 
@@ -185,16 +191,8 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
     try {
       setSaving(true);
       
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
-          title: "Session expirée",
-          description: "Veuillez vous reconnecter.",
-          variant: "destructive",
-        });
-        navigate("/auth", { state: { returnTo: "/admin/listings" } });
-        return;
-      }
+      const session = await checkSession();
+      if (!session) return;
 
       const price = parseFloat(formData.price);
       if (isNaN(price) || price <= 0) {
@@ -386,3 +384,4 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
     </Form>
   );
 };
+

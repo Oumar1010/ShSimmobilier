@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -6,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { Loader2, Upload } from "lucide-react";
 import {
   Form,
@@ -72,8 +71,12 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast.error("Session expirée. Veuillez vous reconnecter.");
-        navigate("/auth", { state: { returnTo: "/listings/admin" } });
+        toast({
+          title: "Session expirée",
+          description: "Veuillez vous reconnecter.",
+          variant: "destructive",
+        });
+        navigate("/auth", { state: { returnTo: "/admin/listings" } });
       }
     };
 
@@ -83,8 +86,12 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
-        toast.error("Session expirée. Veuillez vous reconnecter.");
-        navigate("/auth", { state: { returnTo: "/listings/admin" } });
+        toast({
+          title: "Session expirée",
+          description: "Veuillez vous reconnecter.",
+          variant: "destructive",
+        });
+        navigate("/auth", { state: { returnTo: "/admin/listings" } });
       }
     });
 
@@ -100,7 +107,11 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
       
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast.error("Session expirée. Veuillez vous reconnecter.");
+        toast({
+          title: "Session expirée",
+          description: "Veuillez vous reconnecter.",
+          variant: "destructive",
+        });
         navigate("/auth");
         return;
       }
@@ -109,12 +120,20 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
 
       for (const file of files) {
         if (file.size > 5 * 1024 * 1024) {
-          toast.error(`Le fichier ${file.name} est trop volumineux (max 5MB)`);
+          toast({
+            title: "Erreur",
+            description: `Le fichier ${file.name} est trop volumineux (max 5MB)`,
+            variant: "destructive",
+          });
           continue;
         }
 
         if (!file.type.startsWith('image/')) {
-          toast.error(`Le fichier ${file.name} n'est pas une image`);
+          toast({
+            title: "Erreur",
+            description: `Le fichier ${file.name} n'est pas une image`,
+            variant: "destructive",
+          });
           continue;
         }
 
@@ -127,7 +146,11 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
 
         if (uploadError) {
           console.error("Erreur upload:", uploadError);
-          toast.error(`Erreur lors de l'upload de ${file.name}: ${uploadError.message}`);
+          toast({
+            title: "Erreur",
+            description: `Erreur lors de l'upload de ${file.name}: ${uploadError.message}`,
+            variant: "destructive",
+          });
           continue;
         }
 
@@ -141,11 +164,18 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
       if (uploadedUrls.length > 0) {
         const currentImages = form.getValues("images") || [];
         form.setValue("images", [...currentImages, ...uploadedUrls]);
-        toast.success("Images ajoutées avec succès");
+        toast({
+          title: "Succès",
+          description: "Images ajoutées avec succès",
+        });
       }
     } catch (error) {
       console.error("Error uploading images:", error);
-      toast.error("Une erreur est survenue lors de l'upload des images");
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'upload des images",
+        variant: "destructive",
+      });
     } finally {
       setUploading(false);
     }
@@ -157,14 +187,22 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
       
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast.error("Session expirée. Veuillez vous reconnecter.");
-        navigate("/auth", { state: { returnTo: "/listings/admin" } });
+        toast({
+          title: "Session expirée",
+          description: "Veuillez vous reconnecter.",
+          variant: "destructive",
+        });
+        navigate("/auth", { state: { returnTo: "/admin/listings" } });
         return;
       }
 
       const price = parseFloat(formData.price);
       if (isNaN(price) || price <= 0) {
-        toast.error("Le prix doit être un nombre positif");
+        toast({
+          title: "Erreur",
+          description: "Le prix doit être un nombre positif",
+          variant: "destructive",
+        });
         return;
       }
 
@@ -184,25 +222,34 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
 
       if (error) {
         console.error("Erreur création annonce:", error);
-        if (error.code === "42501") {
-          toast.error("Vous n'avez pas les permissions nécessaires pour créer une annonce");
-        } else if (error.code === "23505") {
-          toast.error("Une annonce avec ce titre existe déjà");
-        } else {
-          toast.error(`Erreur lors de la création de l'annonce: ${error.message}`);
-        }
+        toast({
+          title: "Erreur",
+          description: error.message,
+          variant: "destructive",
+        });
         return;
       }
 
-      toast.success("Annonce créée avec succès");
+      toast({
+        title: "Succès",
+        description: "Annonce créée avec succès",
+      });
       form.reset();
       onSuccess();
     } catch (error) {
       console.error("Error creating listing:", error);
       if (error instanceof Error) {
-        toast.error(`Erreur lors de la création de l'annonce: ${error.message}`);
+        toast({
+          title: "Erreur",
+          description: `Erreur lors de la création de l'annonce: ${error.message}`,
+          variant: "destructive",
+        });
       } else {
-        toast.error("Une erreur inattendue est survenue lors de la création de l'annonce");
+        toast({
+          title: "Erreur",
+          description: "Une erreur inattendue est survenue lors de la création de l'annonce",
+          variant: "destructive",
+        });
       }
     } finally {
       setSaving(false);

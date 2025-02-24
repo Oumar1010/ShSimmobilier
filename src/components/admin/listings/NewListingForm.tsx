@@ -41,6 +41,16 @@ const listingSchema = z.object({
 
 type FormValues = z.infer<typeof listingSchema>;
 
+type ListingInsert = {
+  title: string;
+  description: string;
+  price: number;
+  location: string;
+  status: string;
+  images?: string[];
+  user_id: string;
+};
+
 export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
   const navigate = useNavigate();
   const [uploading, setUploading] = useState(false);
@@ -98,13 +108,11 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
       const uploadedUrls = [];
 
       for (const file of files) {
-        // Vérification de la taille du fichier (max 5MB)
         if (file.size > 5 * 1024 * 1024) {
           toast.error(`Le fichier ${file.name} est trop volumineux (max 5MB)`);
           continue;
         }
 
-        // Vérification du type de fichier
         if (!file.type.startsWith('image/')) {
           toast.error(`Le fichier ${file.name} n'est pas une image`);
           continue;
@@ -143,7 +151,7 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
     }
   };
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (formData: FormValues) => {
     try {
       setSaving(true);
       
@@ -154,18 +162,25 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
         return;
       }
 
-      // Vérification que le prix est un nombre valide
-      const price = parseFloat(data.price);
+      const price = parseFloat(formData.price);
       if (isNaN(price) || price <= 0) {
         toast.error("Le prix doit être un nombre positif");
         return;
       }
 
-      const { error } = await supabase.from("real_estate_listings").insert({
-        ...data,
+      const listingData: ListingInsert = {
+        title: formData.title,
+        description: formData.description,
         price: price,
+        location: formData.location,
+        status: formData.status,
+        images: formData.images,
         user_id: session.user.id,
-      });
+      };
+
+      const { error } = await supabase
+        .from("real_estate_listings")
+        .insert(listingData);
 
       if (error) {
         console.error("Erreur création annonce:", error);
@@ -300,7 +315,6 @@ export const NewListingForm = ({ onSuccess }: NewListingFormProps) => {
             </label>
           </div>
 
-          {/* Preview des images */}
           {form.watch("images")?.length > 0 && (
             <div className="mt-4 grid grid-cols-2 gap-4">
               {form.watch("images")?.map((url, index) => (

@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import ResetPassword from "./pages/ResetPassword";
 import AdminListings from "./pages/AdminListings";
 import NewProject from "./pages/NewProject";
+import NotFound from "./pages/NotFound";
 import { Toaster } from "@/components/ui/toaster";
 import { FloatingAuthButton } from "./components/auth/FloatingAuthButton";
 import { Navbar } from "./components/Navbar";
@@ -25,6 +26,8 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin/listings" element={<AdminListings />} />
           <Route path="/new-project" element={<NewProject />} />
+          {/* Catch-all route for 404 errors */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
       <FloatingAuthButton />
@@ -34,4 +37,3 @@ function App() {
 }
 
 export default App;
-

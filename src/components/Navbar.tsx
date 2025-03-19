@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Menu, X, Home, Briefcase, Calendar, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const menuItems = [
   {
@@ -33,6 +33,7 @@ export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,33 +47,56 @@ export const Navbar = () => {
       const elementId = href.substring(2);
       // Si on n'est pas sur la page d'accueil, naviguer d'abord vers celle-ci
       if (location.pathname !== '/') {
-        window.location.href = href;
-        return;
+        navigate('/');
+        // Slight delay to ensure navigation completes before scrolling
+        setTimeout(() => {
+          const element = document.getElementById(elementId);
+          if (element) {
+            element.scrollIntoView({ 
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }, 100);
+      } else {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
       }
-      const element = document.getElementById(elementId);
-      if (element) {
-        element.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-        setIsOpen(false);
-      }
+      setIsOpen(false);
+    } else {
+      navigate(href);
+      setIsOpen(false);
     }
   };
 
   const scrollToAppointment = () => {
     if (location.pathname !== '/') {
-      window.location.href = '/#appointment';
-      return;
+      navigate('/');
+      // Slight delay to ensure navigation completes before scrolling
+      setTimeout(() => {
+        const element = document.getElementById('appointment');
+        if (element) {
+          element.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }, 100);
+    } else {
+      const element = document.getElementById('appointment');
+      if (element) {
+        element.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
     }
-    const element = document.getElementById('appointment');
-    if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
-      setIsOpen(false);
-    }
+    setIsOpen(false);
   };
 
   return (
@@ -114,15 +138,18 @@ export const Navbar = () => {
                   {item.name}
                 </Button>
               ) : (
-                <Link
+                <Button
                   key={item.name}
-                  to={item.href.startsWith('/#') ? item.href.substring(1) : item.href}
+                  variant="ghost"
                   className="flex items-center space-x-2 text-white hover:text-[#FFD700] transition-colors duration-300 group relative"
-                  onClick={(e) => item.href.startsWith('/#') && handleNavigation(item.href, e)}
+                  onClick={(e) => item.href.startsWith('/#') 
+                    ? handleNavigation(item.href, e) 
+                    : navigate(item.href)
+                  }
                 >
                   <item.icon className="h-5 w-5 group-hover:text-[#FFD700] transition-colors duration-300" />
                   <span className="font-medium after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-[#FFD700] after:origin-bottom-right after:transition-transform after:duration-300 group-hover:after:scale-x-100 group-hover:after:origin-bottom-left">{item.name}</span>
-                </Link>
+                </Button>
               )
             ))}
           </div>
@@ -179,20 +206,22 @@ export const Navbar = () => {
                   {item.name}
                 </Button>
               ) : (
-                <Link
+                <Button
                   key={item.name}
-                  to={item.href.startsWith('/#') ? item.href.substring(1) : item.href}
-                  className="flex items-center space-x-3 text-white hover:text-[#FFD700] py-3 px-4 rounded-lg transition-colors duration-300"
+                  variant="ghost"
+                  className="w-full justify-start flex items-center space-x-3 text-white hover:text-[#FFD700] py-3 px-4 rounded-lg transition-colors duration-300"
                   onClick={(e) => {
                     if (item.href.startsWith('/#')) {
                       handleNavigation(item.href, e);
+                    } else {
+                      navigate(item.href);
+                      setIsOpen(false);
                     }
-                    setIsOpen(false);
                   }}
                 >
                   <item.icon className="h-6 w-6" />
                   <span className="font-medium text-lg">{item.name}</span>
-                </Link>
+                </Button>
               )
             ))}
           </div>

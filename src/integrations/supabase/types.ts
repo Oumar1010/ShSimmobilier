@@ -416,6 +416,10 @@ export type Database = {
             }
             Returns: boolean
           }
+      keep_database_active: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

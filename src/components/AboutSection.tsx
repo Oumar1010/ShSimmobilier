@@ -1,19 +1,13 @@
 import { Award, Building2, Handshake, Star } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
-
 export const AboutSection = () => {
-  return (
-    <section id="about" className="py-20 bg-white">
+  return <section id="about" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Image Column */}
           <div className="relative">
             <div className="aspect-square rounded-2xl overflow-hidden shadow-xl">
-              <img
-                src="/lovable-uploads/fb3c80c7-008e-4d57-9bc4-3b98f0e8271e.png"
-                alt="Mamadou Seck - Directeur de SHS Immobilier"
-                className="w-full h-full object-cover"
-              />
+              
             </div>
             <div className="absolute -bottom-6 -right-6 bg-secondary p-4 rounded-lg shadow-lg">
               <Star className="w-12 h-12 text-primary" />
@@ -86,6 +80,5 @@ export const AboutSection = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };

@@ -88,13 +88,15 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12">Nos Projets Immobiliers</h2>
-          <ProjectsList />
-        </div>
-      </section>
+      {/* Projects Section - Only shown when user is logged in */}
+      {user && (
+        <section className="py-16 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-bold text-center mb-12">Nos Projets Immobiliers</h2>
+            <ProjectsList />
+          </div>
+        </section>
+      )}
 
       {/* Detailed Services Sections */}
       <LandServices />

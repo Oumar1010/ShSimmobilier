@@ -33,7 +33,7 @@ export const DesktopMenu = ({ menuItems, onNavigate, onAppointment }: DesktopMen
           <Button
             key={item.name}
             variant="ghost"
-            className="flex items-center space-x-2 text-white hover:text-[#FFD700] transition-colors duration-300 group relative"
+            className="flex items-center space-x-2 text-white hover:text-[#FFD700] hover:bg-black transition-all duration-300 group relative"
             onClick={(e) =>
               item.href.startsWith("/#")
                 ? onNavigate(item.href, e)

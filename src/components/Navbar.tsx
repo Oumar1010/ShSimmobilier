@@ -1,10 +1,11 @@
 
 import { useState } from "react";
 import { Menu, X, Home, Briefcase, Calendar, Search } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { DesktopMenu } from "./navbar/DesktopMenu";
 import { MobileMenu } from "./navbar/MobileMenu";
 import { NavItem } from "./navbar/types";
+import { useNavigation } from "@/hooks/useNavigation";
 
 const menuItems: NavItem[] = [
   {
@@ -32,65 +33,17 @@ const menuItems: NavItem[] = [
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const { handleNavigation, scrollToAppointment } = useNavigation();
 
-  const handleNavigation = (href: string, e?: React.MouseEvent) => {
-    e?.preventDefault();
-    
-    if (href.startsWith('/#')) {
-      const elementId = href.substring(2);
-      // Si on n'est pas sur la page d'accueil, naviguer d'abord vers celle-ci
-      if (location.pathname !== '/') {
-        navigate('/');
-        // Slight delay to ensure navigation completes before scrolling
-        setTimeout(() => {
-          const element = document.getElementById(elementId);
-          if (element) {
-            element.scrollIntoView({ 
-              behavior: 'smooth',
-              block: 'start'
-            });
-          }
-        }, 100);
-      } else {
-        const element = document.getElementById(elementId);
-        if (element) {
-          element.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      }
-      setIsOpen(false);
-    } else {
-      navigate(href);
+  const handleMenuItemClick = (href: string, e?: React.MouseEvent) => {
+    const handled = handleNavigation(href, e);
+    if (handled) {
       setIsOpen(false);
     }
   };
 
-  const scrollToAppointment = () => {
-    if (location.pathname !== '/') {
-      navigate('/');
-      // Slight delay to ensure navigation completes before scrolling
-      setTimeout(() => {
-        const element = document.getElementById('appointment');
-        if (element) {
-          element.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      }, 100);
-    } else {
-      const element = document.getElementById('appointment');
-      if (element) {
-        element.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    }
+  const handleAppointmentClick = () => {
+    scrollToAppointment();
     setIsOpen(false);
   };
 
@@ -110,8 +63,8 @@ export const Navbar = () => {
           {/* Desktop menu */}
           <DesktopMenu 
             menuItems={menuItems} 
-            onNavigate={handleNavigation}
-            onAppointment={scrollToAppointment}
+            onNavigate={handleMenuItemClick}
+            onAppointment={handleAppointmentClick}
           />
 
           {/* Mobile menu */}
@@ -119,8 +72,8 @@ export const Navbar = () => {
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             menuItems={menuItems}
-            onNavigate={handleNavigation}
-            onAppointment={scrollToAppointment}
+            onNavigate={handleMenuItemClick}
+            onAppointment={handleAppointmentClick}
           />
         </div>
       </div>
